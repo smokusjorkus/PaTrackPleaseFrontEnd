@@ -1,6 +1,7 @@
 import React from "react";
 import "./LoginPageStyle.css";
 import "animate.css";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
   return (
@@ -22,7 +23,7 @@ export default function LoginPage() {
         </form>
 
         <p className="login-footer">
-          Don't have an account? <span>Create one</span>
+          Don't have an account? <Link to="/Register"><span>Create one</span></Link>
         </p>
       </div>
     </section>
