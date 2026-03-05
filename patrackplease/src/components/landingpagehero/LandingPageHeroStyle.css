@@ -1,0 +1,96 @@
+.BOLD {
+  font-weight: 700;
+}
+
+/* HERO CONTAINER */
+.hero-first {
+  font-family: "Outfit", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* GRADIENT BACKGROUND */
+.hero-first::before {
+  content: "";
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  top: -25%;
+  left: -25%;
+
+  background:
+    radial-gradient(circle at 15% 25%, #f3a7c0 0%, transparent 50%),
+    radial-gradient(circle at 85% 15%, #a6d1c7 0%, transparent 50%),
+    radial-gradient(circle at 60% 85%, #a8bff2 0%, transparent 50%),
+    radial-gradient(circle at 30% 70%, #e6b6c1 0%, transparent 50%);
+
+  filter: blur(120px);
+  opacity: 0.9;
+  z-index: 0;
+}
+
+/* CONTENT */
+.hero-content {
+  z-index: 2;
+  max-width: 600px;
+}
+
+/* TITLE */
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: -1px;
+}
+
+/* SUBTITLE */
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+/* BUTTON AREA */
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  font-family: "Outfit", sans-serif;
+}
+
+/* BUTTONS */
+.primary-btn {
+  padding: 12px 28px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-family: "Outfit", sans-serif;
+}
+
+.primary-btn:hover {
+  background: #222;
+  transform: translateY(-2px);
+}
+
+.secondary-btn {
+  padding: 12px 28px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Outfit", sans-serif;
+  transition: 0.2s ease;
+}
+
+.secondary-btn:hover {
+  background: #f5f5f5;
+  transform: translateY(-2px);
+}

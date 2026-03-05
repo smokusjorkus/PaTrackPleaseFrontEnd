@@ -1,0 +1,157 @@
+.features-section {
+  position: relative;
+  padding: 80px 20px;
+  background: #f0f4f8; /* match your FeaturesHero */
+  text-align: center;
+  overflow: hidden;
+}
+
+.features-wrap {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.features-header {
+  max-width: 820px;
+  margin: 0 auto 44px auto;
+}
+
+.features-badge {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: #222;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+  font-family: "Outfit", sans-serif;
+}
+
+.features-heading {
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 12px;
+  font-family: "Outfit", sans-serif;
+}
+
+.features-text {
+  color: #555;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 0 auto;
+  max-width: 680px;
+  font-family: "Outfit", sans-serif;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.features-card {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  padding: 26px 22px;
+  text-align: left;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  font-family: "Outfit", sans-serif;
+}
+
+.features-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 14px;
+  font-size: 1.15rem;
+}
+
+.features-card-title {
+  margin: 0 0 8px 0;
+  color: #222;
+  font-size: 1.1rem;
+}
+
+.features-card-desc {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.features-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.09);
+}
+
+.features-cta {
+  margin-top: 36px;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* keep button sizing consistent with your hero */
+.features-cta .primary-btn,
+.features-cta .secondary-btn {
+  font-size: 0.95rem;
+  padding: 10px 24px;
+}
+
+.features-section .primary-btn:hover,
+.features-section .secondary-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* flare glows */
+.features-glow {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 999px;
+  filter: blur(70px);
+  opacity: 0.33;
+  pointer-events: none;
+}
+
+.features-glow-1 {
+  top: -190px;
+  left: -160px;
+  background: radial-gradient(circle at 30% 30%, #9cc9ff, transparent 60%);
+}
+
+.features-glow-2 {
+  bottom: -240px;
+  right: -170px;
+  background: radial-gradient(circle at 30% 30%, #b7f0d6, transparent 60%);
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .features-card {
+    text-align: center;
+  }
+
+  .features-icon {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

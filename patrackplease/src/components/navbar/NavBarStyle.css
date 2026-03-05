@@ -1,0 +1,42 @@
+.navbar-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 20px 40px;
+  font-family: "Outfit", sans-serif;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+
+  color: black;
+
+  background: transparent;
+  transition: 0.3s animate__backInLeft;
+}
+
+/* when scrolling */
+.navbar-container.scrolled {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+/* links */
+.navbar-links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 25px;
+}
+
+.navbar-links li {
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.navbar-links li:hover {
+  opacity: 0.6;
+}
