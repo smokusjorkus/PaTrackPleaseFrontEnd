@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./NavBarStyle.css";
+import { Link } from "react-router-dom";
 
 export default function NavBar() {
   const [color, setColor] = useState(false);
@@ -26,8 +27,13 @@ export default function NavBar() {
 
       <ul className="navbar-links">
         <li>About Us</li>
-        <li>Login</li>
-        <li>Register</li>
+        <li>Features</li>
+        <li>
+          <Link to="/Login">Login</Link>
+        </li>
+        <li>
+          <Link to="/Register">Register</Link>
+        </li>
       </ul>
     </nav>
   );

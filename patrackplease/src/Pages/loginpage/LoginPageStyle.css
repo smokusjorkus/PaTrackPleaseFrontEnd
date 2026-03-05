@@ -1,4 +1,4 @@
-.register-page {
+.login-page {
   font-family: "Outfit", sans-serif;
   min-height: 100vh;
   display: flex;
@@ -7,33 +7,38 @@
   background: #f0f4f8;
 }
 
-.register-card {
+/* card */
+.login-card {
   background: white;
   padding: 40px;
-  width: 360px;
+  width: 350px;
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   text-align: center;
 }
 
-.register-title {
+/* title */
+.login-title {
   font-size: 2rem;
   margin-bottom: 10px;
 }
 
-.register-subtitle {
+/* subtitle */
+.login-subtitle {
   font-size: 0.9rem;
   color: #666;
   margin-bottom: 30px;
 }
 
-.register-form {
+/* form */
+.login-form {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.register-input {
+/* inputs */
+.login-input {
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ddd;
@@ -41,12 +46,13 @@
   font-size: 0.95rem;
 }
 
-.register-input:focus {
+.login-input:focus {
   outline: none;
   border-color: black;
 }
 
-.register-button {
+/* button */
+.login-button {
   margin-top: 10px;
   padding: 12px;
   background: black;
@@ -57,19 +63,20 @@
   transition: 0.2s ease;
 }
 
-.register-button:hover {
+.login-button:hover {
   background: #222;
   transform: translateY(-2px);
 }
 
-.register-footer {
+/* footer */
+.login-footer {
   margin-top: 20px;
   font-size: 0.85rem;
   color: #777;
 }
 
-.register-footer span {
+.login-footer span {
   color: black;
-  font-weight: 600;
   cursor: pointer;
+  font-weight: 600;
 }

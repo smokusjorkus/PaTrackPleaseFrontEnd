@@ -1,6 +1,7 @@
 import React from "react";
 import "./LandingPageHeroStyle.css";
 import "animate.css";
+import { Link } from "react-router-dom";
 
 export default function LandingPageHero() {
   return (
@@ -16,8 +17,12 @@ export default function LandingPageHero() {
         </p>
 
         <div className="hero-buttons">
-          <button className="primary-btn">Login</button>
-          <button className="secondary-btn">Register</button>
+          <button className="primary-btn">
+            <Link to="/Login">Login</Link>
+          </button>
+          <button className="secondary-btn">
+            <Link to="/Register">Register</Link>
+          </button>
         </div>
       </div>
     </section>
