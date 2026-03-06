@@ -23,7 +23,9 @@ export default function NavBar() {
 
   return (
     <nav className={color ? "navbar-container scrolled" : "navbar-container"}>
-      <h1>PaTrackPlease</h1>
+      <a href="/" className="Nav-barLogo">
+        <h1>PaTrackPlease</h1>
+      </a>
 
       <ul className="navbar-links">
         <a href="/#aboutus">

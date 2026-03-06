@@ -4,7 +4,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f0f4f8;
+  background-color: hsla(14, 100%, 50%, 1);
+  background-image: #000;
 }
 
 /* card */

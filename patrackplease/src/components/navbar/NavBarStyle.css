@@ -41,3 +41,8 @@
 .navbar-links a:hover {
   opacity: 0.6;
 }
+
+.Nav-barLogo {
+  text-decoration: none;
+  color: black;
+}
