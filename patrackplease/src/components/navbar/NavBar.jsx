@@ -26,8 +26,12 @@ export default function NavBar() {
       <h1>PaTrackPlease</h1>
 
       <ul className="navbar-links">
-        <li>About Us</li>
-        <li>Features</li>
+        <a href="/#aboutus">
+          <li>About Us</li>
+        </a>
+        <a href="/#features">
+          <li>Features</li>
+        </a>
         <li>
           <Link to="/Login">Login</Link>
         </li>

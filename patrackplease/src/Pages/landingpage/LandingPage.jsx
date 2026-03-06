@@ -11,8 +11,12 @@ export default function LandingPage() {
     <div>
       <NavBar />
       <LandingPageHero />
-      <AboutUs />
-      <FeaturesHero />
+      <section id="aboutus">
+        <AboutUs />
+      </section>
+      <section id="features">
+        <FeaturesHero />
+      </section>
       <Footer />
     </div>
   );
