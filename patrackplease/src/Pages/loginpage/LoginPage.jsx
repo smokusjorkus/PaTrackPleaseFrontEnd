@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "./LoginPageStyle.css";
 import "animate.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Balatro from "./../../components/balatro/Balatro";
+import ErrorMessage from "../../components/errormessage/ErrorMessage";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ export default function LoginPage() {
 
   const [error, setError] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const nav = useNavigate();
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -24,8 +26,33 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.email) {
+    if (!formData.email || !formData.password) {
       setError("Please fill in all fields.");
+    }
+
+    const payload = {
+      email: formData.email,
+      password: formData.password,
+    };
+
+    try {
+      const res = await fetch("http://localhost:8080/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Registration failed!");
+        return;
+      }
+
+      alert("Login Successful");
+      nav("/dashboard");
+    } catch (error) {
+      setError("Something went wrong.");
     }
   };
 
@@ -63,7 +90,7 @@ export default function LoginPage() {
           />
 
           <input
-            type="password"
+            type={isVisible ? "text" : "password"}
             name="password"
             placeholder="Password"
             className="login-input"
@@ -71,6 +98,17 @@ export default function LoginPage() {
             onChange={handleInput}
             required
           />
+
+          <div>
+            <input
+              type="checkbox"
+              id="togglePassword"
+              checked={isVisible}
+              onChange={() => setIsVisible(!isVisible)}
+            />
+            <label htmlFor="togglePassword">Show Password</label>
+          </div>
+          {error && <ErrorMessage value={error} />}
 
           <button type="submit" className="login-button">
             Sign In
