@@ -4,6 +4,11 @@ import { Link } from "react-router-dom";
 
 export default function NavBar() {
   const [color, setColor] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
 
   const changeColor = () => {
     if (window.scrollY >= 90) {
@@ -15,19 +20,21 @@ export default function NavBar() {
 
   useEffect(() => {
     window.addEventListener("scroll", changeColor);
+    window.addEventListener("resize", toggleMenu);
 
     return () => {
       window.removeEventListener("scroll", changeColor);
+      window.removeEventListener("resize", toggleMenu);
     };
   }, []);
 
   return (
     <nav className={color ? "navbar-container scrolled" : "navbar-container"}>
-      <a href="/" className="Nav-barLogo">
+      <Link to="/" className="Nav-barLogo">
         <h1>PaTrackPlease</h1>
-      </a>
+      </Link>
 
-      <ul className="navbar-links">
+      <div className={`navbar-links ${menuOpen ? "open" : ""}`}>
         <a href="/#aboutus">
           <li>About Us</li>
         </a>
@@ -40,7 +47,14 @@ export default function NavBar() {
         <li>
           <Link to="/Register">Register</Link>
         </li>
-      </ul>
+      </div>
+
+      <div className="hamburger" onClick={toggleMenu}>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </nav>
   );
 }

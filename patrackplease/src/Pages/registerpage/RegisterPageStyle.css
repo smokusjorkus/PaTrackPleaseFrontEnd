@@ -4,75 +4,53 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative; /* Fixed: Allows background to sit behind */
+  overflow: hidden; /* Fixed: Prevents scrollbars */
+
+  /* Your original radial gradients act as a fallback */
+  background-color: #1a1a1a;
   background-image:
-    radial-gradient(
-      at 19.755158576713406% 54.594344459975595%,
-      hsla(54.54545454545455, 100%, 67.64705882352942%, 1) 0%,
-      hsla(54.54545454545455, 100%, 67.64705882352942%, 0) 100%
-    ),
-    radial-gradient(
-      at 37.90212409305762% 6.7140708167119145%,
-      hsla(0, 0%, 9.803921568627452%, 1) 0%,
-      hsla(0, 0%, 9.803921568627452%, 0) 100%
-    ),
-    radial-gradient(
-      at 46.82481645823518% 37.14100522924656%,
-      hsla(10.909090909090908, 100%, 67.64705882352942%, 1) 0%,
-      hsla(10.909090909090908, 100%, 67.64705882352942%, 0) 100%
-    ),
-    radial-gradient(
-      at 99.83138364308263% 6.192833384096064%,
-      hsla(29.09090909090909, 100%, 67.64705882352942%, 1) 0%,
-      hsla(29.09090909090909, 100%, 67.64705882352942%, 0) 100%
-    ),
-    radial-gradient(
-      at 8.694227740563132% 45.46621439334137%,
-      hsla(43.63636363636364, 100%, 67.64705882352942%, 1) 0%,
-      hsla(43.63636363636364, 100%, 67.64705882352942%, 0) 100%
-    ),
-    radial-gradient(
-      at 18.89114018820617% 50.506189272092314%,
-      hsla(54.54545454545455, 100%, 67.64705882352942%, 1) 0%,
-      hsla(54.54545454545455, 100%, 67.64705882352942%, 0) 100%
-    ),
-    radial-gradient(
-      at 55.182581827304745% 14.546429042801968%,
-      hsla(0, 0%, 9.803921568627452%, 1) 0%,
-      hsla(0, 0%, 9.803921568627452%, 0) 100%
-    ),
-    radial-gradient(
-      at 24.593798789666486% 27.937298012066456%,
-      hsla(10.909090909090908, 100%, 67.64705882352942%, 1) 0%,
-      hsla(10.909090909090908, 100%, 67.64705882352942%, 0) 100%
-    );
+    radial-gradient(at 19% 54%, hsla(54, 100%, 67%, 1) 0%, transparent 100%),
+    radial-gradient(at 37% 6%, hsla(0, 0%, 9%, 1) 0%, transparent 100%),
+    radial-gradient(at 46% 37%, hsla(10, 100%, 67%, 1) 0%, transparent 100%);
+}
+
+/* Background Wrapper */
+.balatro-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 .register-card {
+  position: relative;
+  z-index: 1; /* Sits above Balatro */
   background: white;
   padding: 40px;
-  width: 360px;
+  width: 380px; /* Slightly wider to accommodate more fields */
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
   text-align: center;
 }
 
+/* Keep your title, form, and button styles exactly as they are */
 .register-title {
   font-size: 2rem;
   margin-bottom: 10px;
 }
-
 .register-subtitle {
   font-size: 0.9rem;
   color: #666;
   margin-bottom: 30px;
 }
-
 .register-form {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-
 .register-input {
   padding: 12px;
   border-radius: 8px;
@@ -80,12 +58,6 @@
   font-family: "Outfit", sans-serif;
   font-size: 0.95rem;
 }
-
-.register-input:focus {
-  outline: none;
-  border-color: black;
-}
-
 .register-button {
   margin-top: 10px;
   padding: 12px;
@@ -94,22 +66,25 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  font-family: "Outfit", sans-serif;
   transition: 0.2s ease;
 }
-
 .register-button:hover {
   background: #222;
   transform: translateY(-2px);
 }
 
 .register-footer {
-  margin-top: 20px;
-  font-size: 0.85rem;
-  color: #777;
+  margin: 20px 0 0;
 }
 
-.register-footer span {
+.register-footer a {
   color: black;
   font-weight: 600;
-  cursor: pointer;
+}
+
+.ErrorMessage {
+  margin-top: 10px;
+  color: red;
+  font-size: 0.9rem;
 }

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import "./RegisterPageStyle.css";
 import "animate.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Balatro from "./../../components/balatro/Balatro";
+import ErrorMessage from "../../components/errormessage/ErrorMessage";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -13,6 +15,13 @@ export default function RegisterPage() {
     confirmPassword: "",
   });
 
+  const nav = useNavigate();
+  const [error, setError] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+
+  const hasCapital = /[A-Z]/.test(formData.password);
+  const hasNumber = /\d/.test(formData.password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(formData.password);
 
   const handleChange = (e) => {
     setFormData({
@@ -21,31 +30,100 @@ export default function RegisterPage() {
     });
   };
 
-  const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  if (
-    formData.userName === "" ||
-    formData.firstName === "" ||
-    formData.lastName === "" ||
-    formData.email === "" ||
-    formData.password === "" ||
-    formData.confirmPassword === ""
-  ) {
-    alert("Please fill in all fields");
-    return;
-  }
+    if (
+      !formData.userName ||
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      setError(
+        `Please fill your ${
+          !formData.userName
+            ? "User Name"
+            : !formData.firstName
+              ? "First Name"
+              : !formData.lastName
+                ? "Last Name"
+                : !formData.email
+                  ? "Email"
+                  : !formData.password
+                    ? "Password"
+                    : "Confirm Password"
+        }.`,
+      );
+      return;
+    }
 
-  if (formData.password !== formData.confirmPassword) {
-    alert("Passwords do not match");
-    return;
-  }
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
 
-  console.log(formData); // later send to Spring Boot
-};
+    if (!hasCapital || !hasNumber || !hasSpecialChar) {
+      setError(
+        "Password must contain at least one capital letter, one number, and one special character.",
+      );
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Oops! Passwords aren't the same.");
+      return;
+    }
+
+    const payload = {
+      username: formData.userName,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+    };
+
+    try {
+      const res = await fetch("http://localhost:8080/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Registration failed!");
+        return;
+      }
+
+      alert("Registration successful! Please login.");
+      nav("/login");
+      return;
+    } catch (error) {
+      setError("An error occurred. Please try again later.");
+    }
+  };
 
   return (
     <section className="register-page">
+      <div className="balatro-wrapper">
+        <Balatro
+          spinRotation={-2}
+          spinSpeed={7}
+          color1="#fff05a"
+          color2="#ff6e5a"
+          color3="#ffd25a"
+          contrast={3.5}
+          lighting={0.4}
+          spinAmount={0.25}
+          pixelFilter={745}
+        />
+      </div>
+
       <div className="register-card animate__animated animate__fadeInUp">
         <h1 className="register-title">Create Account</h1>
         <p className="register-subtitle">
@@ -60,6 +138,7 @@ export default function RegisterPage() {
             className="register-input"
             value={formData.userName}
             onChange={handleChange}
+            required
           />
 
           <input
@@ -69,6 +148,7 @@ export default function RegisterPage() {
             className="register-input"
             value={formData.firstName}
             onChange={handleChange}
+            required
           />
 
           <input
@@ -78,6 +158,7 @@ export default function RegisterPage() {
             className="register-input"
             value={formData.lastName}
             onChange={handleChange}
+            required
           />
 
           <input
@@ -87,33 +168,51 @@ export default function RegisterPage() {
             className="register-input"
             value={formData.email}
             onChange={handleChange}
+            required
           />
 
           <input
-            type="password"
+            type={isVisible ? "text" : "password"}
             name="password"
             placeholder="Password"
             className="register-input"
             value={formData.password}
             onChange={handleChange}
+            required
           />
 
           <input
-            type="password"
+            type={isVisible ? "text" : "password"}
             name="confirmPassword"
             placeholder="Confirm Password"
             className="register-input"
             value={formData.confirmPassword}
             onChange={handleChange}
+            required
           />
+
+          <div>
+            <input
+              type="checkbox"
+              id="togglePassword"
+              checked={isVisible}
+              onChange={() => setIsVisible(!isVisible)}
+            />
+            <label htmlFor="togglePassword">Show Password</label>
+          </div>
 
           <button className="register-button" type="submit">
             Create Account
           </button>
+
+          {error && <ErrorMessage value={error} />}
         </form>
 
         <p className="register-footer">
-          Already have an account? <Link to="/Login"><span>Login</span></Link>
+          Already have an account?{" "}
+          <Link to="/Login">
+            <span>Login</span>
+          </Link>
         </p>
       </div>
     </section>
