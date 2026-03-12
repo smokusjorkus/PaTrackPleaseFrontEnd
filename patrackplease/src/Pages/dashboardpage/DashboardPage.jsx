@@ -34,10 +34,10 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard-page">
-      <DashboardHeader />
+      <Sidebar value={name} isOpen={isOpen} setIsOpen={setIsOpen} />
 
-      <div className="dashboard-body">
-        <Sidebar value={name} isOpen={isOpen} setIsOpen={setIsOpen} />
+      <div className="dashboard-main">
+        <DashboardHeader name={name} />
 
         <main className="dashboard-content">
           <h1>Welcome</h1>

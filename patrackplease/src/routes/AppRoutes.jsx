@@ -6,6 +6,7 @@ import LandingPage from "../Pages/landingpage/LandingPage";
 import Login from "../Pages/loginpage/LoginPage";
 import Register from "../Pages/registerpage/RegisterPage";
 import DashboardPage from "../Pages/dashboardpage/DashboardPage";
+import ProfilePage from "../Pages/profilepage/ProfilePage";
 
 // Protected route
 
@@ -32,16 +33,16 @@ export default function AppRoutes() {
             <Tasks />
           </ProtectedRoute>
         }
-      />
+      /> */}
       <Route
         path="/profile"
         element={
           <ProtectedRoute>
-            <Profile />
+            <ProfilePage />
           </ProtectedRoute>
         }
-      /> */}
-      {/* Catch all */}
+      />
+
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
