@@ -25,9 +25,11 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     if (!formData.email || !formData.password) {
       setError("Please fill in all fields.");
+      return;
     }
 
     const payload = {
@@ -45,9 +47,12 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "Registration failed!");
+        setError(data.message || "Login failed!");
         return;
       }
+
+      // save logged in user
+      localStorage.setItem("user", JSON.stringify(data));
 
       alert("Login Successful");
       nav("/dashboard");

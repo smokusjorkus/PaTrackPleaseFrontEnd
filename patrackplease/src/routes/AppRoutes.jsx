@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "../components/routes/ProtectedRoutes";
 
 // Pages
 import LandingPage from "../Pages/landingpage/LandingPage";
@@ -15,7 +16,15 @@ export default function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/dashboard" element={<DashboardPage />} />
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
       {/* <Route
         path="/tasks"
         element={
