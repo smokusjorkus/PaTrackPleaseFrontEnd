@@ -1,5 +1,17 @@
-.page-container {
+.dashboard-page {
+  min-height: 100vh;
   background-color: white;
   font-family: "Outfit", sans-serif;
   display: flex;
+  flex-direction: column;
+}
+
+.dashboard-body {
+  display: flex;
+  flex: 1;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 30px;
 }

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./../../components/sidebar/Sidebar";
 import "./DashboardPageStyle.css";
+import DashboardHeader from "../../components/dashboardheader/DashboardHeader";
 
 export default function DashboardPage() {
   const [name, setName] = useState("");
-  const [isOpen, setIsOpen] = false;
+  const [isOpen, setIsOpen] = useState(true);
 
   const getUser = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
-      console.log(JSON.parse(localStorage.getItem("user")));
       if (!user) return;
 
       const res = await fetch(
@@ -33,9 +33,16 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="page-container">
-      <Sidebar value={name} />
-      <h1>Welcome</h1>
+    <div className="dashboard-page">
+      <DashboardHeader />
+
+      <div className="dashboard-body">
+        <Sidebar value={name} isOpen={isOpen} setIsOpen={setIsOpen} />
+
+        <main className="dashboard-content">
+          <h1>Welcome</h1>
+        </main>
+      </div>
     </div>
   );
 }
