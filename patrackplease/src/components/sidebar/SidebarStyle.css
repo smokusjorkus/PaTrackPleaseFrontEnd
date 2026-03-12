@@ -3,16 +3,16 @@
   flex-direction: column;
   height: 100vh;
   width: 255px;
-  background: #f8f9fa;
-  border-right: 1px solid #e5e5e5;
+  background: #f7f7f7;
   padding: 15px;
   box-sizing: border-box;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  border: 2px solid #fff05a;
+  border-right: 2px solid #fff05a;
   transition:
     width 0.3s ease,
-    padding 0.3s ease;
+    padding 0.3s ease,
+    transform 0.3s ease;
   overflow: hidden;
   z-index: 1000;
   position: fixed;
@@ -98,4 +98,74 @@
 
 .Sidebar-container.closed .account {
   justify-content: center;
+}
+
+/* tablet */
+@media (max-width: 1024px) {
+  .Sidebar-container.open {
+    width: 220px;
+  }
+
+  .Sidebar-container.closed {
+    width: 70px;
+  }
+
+  .sidebar-btn p {
+    font-size: 13px;
+  }
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .Sidebar-container {
+    width: 220px;
+    transform: translateX(-100%);
+    border-radius: 0 10px 10px 0;
+  }
+
+  .Sidebar-container.open {
+    transform: translateX(0);
+    width: 220px;
+  }
+
+  .Sidebar-container.closed {
+    transform: translateX(-100%);
+    width: 220px;
+  }
+
+  .Sidebar-container.closed .sidebar-btn p,
+  .Sidebar-container.closed .account p {
+    display: block;
+  }
+
+  .Sidebar-container.closed .sidebar-btn {
+    justify-content: flex-start;
+  }
+
+  .Sidebar-container.closed .sidebar-profile-container {
+    flex-direction: row;
+    gap: 0;
+    align-items: center;
+  }
+
+  .Sidebar-container.closed .account {
+    justify-content: flex-start;
+  }
+}
+
+/* small phones */
+@media (max-width: 480px) {
+  .Sidebar-container,
+  .Sidebar-container.open,
+  .Sidebar-container.closed {
+    width: 200px;
+  }
+
+  .sidebar-btn {
+    padding: 9px 10px;
+  }
+
+  .sidebar-btn p {
+    font-size: 12px;
+  }
 }

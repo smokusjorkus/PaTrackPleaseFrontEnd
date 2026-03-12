@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "./../../components/sidebar/Sidebar";
+import Sidebar from "../../components/sidebar/Sidebar";
 import "./DashboardPageStyle.css";
-import DashboardHeader from "../../components/dashboardheader/DashboardHeader";
 
 export default function DashboardPage() {
   const [name, setName] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const getUser = async () => {
     try {
@@ -36,13 +35,11 @@ export default function DashboardPage() {
     <div className="dashboard-page">
       <Sidebar value={name} isOpen={isOpen} setIsOpen={setIsOpen} />
 
-      <div className="dashboard-main">
-        <DashboardHeader name={name} />
-
-        <main className="dashboard-content">
-          <h1>Welcome</h1>
-        </main>
-      </div>
+      <main className="dashboard-main">
+        <div className="dashboard-content">
+          <h1>Welcome, {name || "User"}</h1>
+        </div>
+      </main>
     </div>
   );
 }
