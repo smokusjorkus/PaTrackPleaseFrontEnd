@@ -4,7 +4,7 @@ import "./DashboardPageStyle.css";
 
 export default function DashboardPage() {
   const [name, setName] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const getUser = async () => {
     try {
