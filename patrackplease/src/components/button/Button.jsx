@@ -1,17 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 
-export default function Button() {
+export default function Button({ value, color }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const defaultColor = color || "#FFF05A";
+
+  const buttonStyle = {
+    padding: "15px",
+    fontFamily: "Outfit",
+    // Change background and scale based on hover state
+    backgroundColor: isHovered ? "#e6d851" : defaultColor,
+    transform: isHovered ? "scale(1.05)" : "scale(1)",
+    border: "none",
+    borderRadius: "8px",
+    fontSize: "1.2rem",
+    cursor: "pointer",
+    transition: "all 0.2s ease", // Smooths the "attitude" change
+  };
+
   return (
     <button
-      style={{
-        padding: "10px",
-        fontFamily: "Outfit",
-        backgroundColor: "#FFF05A",
-        border: "none",
-        borderRadius: "8px",
-      }}
+      style={buttonStyle}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      Add Task
+      {value}
     </button>
   );
 }

@@ -37,7 +37,7 @@ export default function DashboardPage() {
 
       <main className="dashboard-main">
         <div className="dashboard-content">
-          <h1>Welcome, {name || "User"}</h1>
+          <h1 style={{ fontSize: "3rem" }}>Welcome, {name || "User"}</h1>
         </div>
       </main>
     </div>

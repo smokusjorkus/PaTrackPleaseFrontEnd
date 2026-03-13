@@ -1,0 +1,58 @@
+.profile-page {
+  min-height: 100vh;
+  background-color: white;
+  font-family: "Outfit", sans-serif;
+}
+
+.profile-main {
+  margin-left: 255px; /* sidebar width */
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+.profile-content {
+  width: 100%;
+  padding: 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.account-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-buttons {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.profile-actions-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.image-desc {
+  color: #000000;
+}
+
+.name-plate-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.name-plate-wrapper input {
+  width: 500px;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 12px;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.1rem;
+}
