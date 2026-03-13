@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   User,
   Search,
@@ -9,11 +9,39 @@ import {
   CircleUserRound,
   LogOut,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
 import "./SidebarStyle.css";
+import Balatro from "../balatro/Balatro";
 
-export default function Sidebar({ value, isOpen, setIsOpen }) {
+export default function Sidebar({ isOpen, setIsOpen }) {
   const nav = useNavigate();
+  const [name, setName] = useState("");
+
+  const getUser = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) return;
+
+      const res = await fetch(
+        `http://localhost:8080/api/users/email?email=${encodeURIComponent(user.email)}`,
+      );
+
+      if (!res.ok) {
+        console.log("Failed to fetch user");
+        return;
+      }
+
+      const data = await res.json();
+      setName(data.username);
+    } catch (error) {
+      console.log("Error fetching user:", error);
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const handlelogout = () => {
     localStorage.removeItem("user");
@@ -29,7 +57,7 @@ export default function Sidebar({ value, isOpen, setIsOpen }) {
       <div className="sidebar-profile-container">
         <div className="account">
           <User size={30} />
-          <p>{value}</p>
+          <p>{name}</p>
         </div>
         <Menu
           onClick={() => setIsOpen(!isOpen)}
@@ -41,10 +69,12 @@ export default function Sidebar({ value, isOpen, setIsOpen }) {
           <CirclePlus />
           <p>Add new Task</p>
         </div>
-        <div className="sidebar-btn">
-          <LayoutDashboard />
-          <p>Dashboard</p>
-        </div>
+        <Link to="/dashboard" style={{ textDecoration: "none" }}>
+          <div className="sidebar-btn">
+            <LayoutDashboard color="#000000" />
+            <p>Dashboard</p>
+          </div>
+        </Link>
         <div className="sidebar-btn">
           <SquareCheck />
           <p>Your Tasks</p>
@@ -53,10 +83,12 @@ export default function Sidebar({ value, isOpen, setIsOpen }) {
           <Search />
           <p>Search Tasks</p>
         </div>
-        <div className="sidebar-btn">
-          <CircleUserRound />
-          <p>Profile</p>
-        </div>
+        <Link to="/profile" style={{ textDecoration: "none" }}>
+          <div className="sidebar-btn">
+            <CircleUserRound color="#000000" />
+            <p>Profile</p>
+          </div>
+        </Link>
         <div className="sidebar-btn" onClick={handlelogout}>
           <LogOut />
           <p>Log out</p>
