@@ -12,7 +12,8 @@ import {
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import "./SidebarStyle.css";
-import Balatro from "../balatro/Balatro";
+import toast from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 export default function Sidebar({ isOpen, setIsOpen }) {
   const nav = useNavigate();
@@ -48,7 +49,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     localStorage.removeItem("email");
     localStorage.removeItem("username");
 
-    alert("Successfully logged out.");
+    toast.success("Successfully logged out.");
     nav("/login");
   };
 

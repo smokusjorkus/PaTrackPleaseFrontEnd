@@ -4,6 +4,7 @@ import "animate.css";
 import { Link, useNavigate } from "react-router-dom";
 import Balatro from "./../../components/balatro/Balatro";
 import ErrorMessage from "../../components/errormessage/ErrorMessage";
+import toast from "react-hot-toast";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -32,7 +33,6 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     if (
       !formData.userName ||
@@ -42,7 +42,7 @@ export default function RegisterPage() {
       !formData.password ||
       !formData.confirmPassword
     ) {
-      setError(
+      toast.error(
         `Please fill your ${
           !formData.userName
             ? "User Name"
@@ -61,19 +61,19 @@ export default function RegisterPage() {
     }
 
     if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters long.");
+      toast.error("Password must be at least 8 characters long.");
       return;
     }
 
     if (!hasCapital || !hasNumber || !hasSpecialChar) {
-      setError(
+      toast.error(
         "Password must contain at least one capital letter, one number, and one special character.",
       );
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Oops! Passwords aren't the same.");
+      toast.error("Oops! Passwords aren't the same.");
       return;
     }
 
@@ -100,7 +100,7 @@ export default function RegisterPage() {
         return;
       }
 
-      alert("Registration successful! Please login.");
+      toast.success("Registration successful! Please login.");
       nav("/login");
       return;
     } catch (error) {
@@ -191,7 +191,14 @@ export default function RegisterPage() {
             required
           />
 
-          <div>
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              alignContent: "center",
+              justifyContent: "center",
+            }}
+          >
             <input
               type="checkbox"
               id="togglePassword"

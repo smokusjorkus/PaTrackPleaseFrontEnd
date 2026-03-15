@@ -4,6 +4,7 @@ import "animate.css";
 import { Link, useNavigate } from "react-router-dom";
 import Balatro from "./../../components/balatro/Balatro";
 import ErrorMessage from "../../components/errormessage/ErrorMessage";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -37,28 +38,33 @@ export default function LoginPage() {
       password: formData.password,
     };
 
-    try {
-      const res = await fetch("http://localhost:8080/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
+    // We wrap the fetch in a promise so toast can track it
+    const loginPromise = fetch("http://localhost:8080/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).then(async (res) => {
       const data = await res.json();
-
       if (!res.ok) {
-        setError(data.message || "Login failed!");
-        return;
+        throw new Error(data.message || "Login failed!");
       }
-
-      // save logged in user
+      // Save user data
       localStorage.setItem("user", JSON.stringify(data));
+      return data;
+    });
 
-      alert("Login Successful");
-      nav("/dashboard");
-    } catch (error) {
-      setError("Something went wrong.");
-    }
+    // This handles the whole UI cycle
+    toast.promise(loginPromise, {
+      loading: "Authenticating...",
+      success: (data) => {
+        nav("/dashboard");
+        return `Welcome back, ${data.username || "User"}!`;
+      },
+      error: (err) => {
+        setError(err.message);
+        return err.message;
+      },
+    });
   };
 
   return (
@@ -104,7 +110,14 @@ export default function LoginPage() {
             required
           />
 
-          <div>
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              alignContent: "center",
+              justifyContent: "center",
+            }}
+          >
             <input
               type="checkbox"
               id="togglePassword"
