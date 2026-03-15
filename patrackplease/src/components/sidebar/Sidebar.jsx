@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   User,
   Search,
@@ -9,46 +9,16 @@ import {
   CircleUserRound,
   LogOut,
 } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import "./SidebarStyle.css";
 import toast from "react-hot-toast";
-import { Toaster } from "react-hot-toast";
 
-export default function Sidebar({ isOpen, setIsOpen }) {
+export default function Sidebar({ isOpen, setIsOpen, name }) {
   const nav = useNavigate();
-  const [name, setName] = useState("");
-
-  const getUser = async () => {
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (!user) return;
-
-      const res = await fetch(
-        `http://localhost:8080/api/users/email?email=${encodeURIComponent(user.email)}`,
-      );
-
-      if (!res.ok) {
-        console.log("Failed to fetch user");
-        return;
-      }
-
-      const data = await res.json();
-      setName(data.username);
-    } catch (error) {
-      console.log("Error fetching user:", error);
-    }
-  };
-
-  useEffect(() => {
-    getUser();
-  }, []);
+  const location = useLocation();
 
   const handlelogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("email");
-    localStorage.removeItem("username");
-
+    localStorage.clear();
     toast.success("Successfully logged out.");
     nav("/login");
   };
@@ -58,41 +28,62 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       <div className="sidebar-profile-container">
         <div className="account">
           <User size={30} />
-          <p>{name}</p>
+          {/* Logic: Label only shows if sidebar is open */}
+          {isOpen && (
+            <p className="animate__animated animate__fadeIn">
+              {name || "User"}
+            </p>
+          )}
         </div>
         <Menu
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setIsOpen(!isOpen)} // The toggle functionality
           style={{ cursor: "pointer" }}
+          className="menu-icon"
         />
       </div>
+
       <nav className="navigation-links">
+        {/* Keeping all your original buttons and labels */}
         <div className="sidebar-btn">
           <CirclePlus />
-          <p>Add new Task</p>
+          {isOpen && <p>Add new Task</p>}
         </div>
-        <Link to="/dashboard" style={{ textDecoration: "none" }}>
+
+        <Link
+          to="/dashboard"
+          style={{ textDecoration: "none" }}
+          className={`sidebar-link ${location.pathname === "/dashboard" ? "active" : ""}`}
+        >
           <div className="sidebar-btn">
             <LayoutDashboard color="#000000" />
-            <p>Dashboard</p>
+            {isOpen && <p>Dashboard</p>}
           </div>
         </Link>
+
         <div className="sidebar-btn">
           <SquareCheck />
-          <p>Your Tasks</p>
+          {isOpen && <p>Your Tasks</p>}
         </div>
+
         <div className="sidebar-btn">
           <Search />
-          <p>Search Tasks</p>
+          {isOpen && <p>Search Tasks</p>}
         </div>
-        <Link to="/profile" style={{ textDecoration: "none" }}>
+
+        <Link
+          to="/profile"
+          style={{ textDecoration: "none" }}
+          className={`sidebar-link ${location.pathname === "/profile" ? "active" : ""}`}
+        >
           <div className="sidebar-btn">
             <CircleUserRound color="#000000" />
-            <p>Profile</p>
+            {isOpen && <p>Profile</p>}
           </div>
         </Link>
-        <div className="sidebar-btn" onClick={handlelogout}>
+
+        <div className="sidebar-btn logout-btn" onClick={handlelogout}>
           <LogOut />
-          <p>Log out</p>
+          {isOpen && <p>Log out</p>}
         </div>
       </nav>
     </div>

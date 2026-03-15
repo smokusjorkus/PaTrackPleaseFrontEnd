@@ -2,84 +2,118 @@
   min-height: 100vh;
   background-color: white;
   font-family: "Outfit", sans-serif;
+  display: flex; /* Ensures sidebar and main live side-by-side */
 }
 
 .profile-main {
-  margin-left: 255px; /* sidebar width */
+  flex-grow: 1; /* Take up remaining space */
   min-height: 100vh;
-  transition: margin-left 0.3s ease;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+/* Adjust margin based on Sidebar state */
+.profile-main.open {
+  margin-left: 255px;
+}
+
+.profile-main.closed {
+  margin-left: 80px; /* Width of collapsed sidebar */
 }
 
 .profile-content {
-  width: 100%;
-  padding: 40px;
-  box-sizing: border-box;
+  max-width: 1000px; /* Prevents content from getting too wide on desktop */
+  margin: 0 auto;
+  padding: 40px 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  justify-content: space-between;
+  gap: 30px;
 }
 
+/* ACCOUNT DETAILS SECTION */
 .account-details {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.profile-buttons {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
+  flex-direction: row; /* Side by side on desktop */
+  align-items: center;
+  gap: 30px;
 }
 
 .profile-actions-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
-.image-desc {
-  color: #000000;
+.profile-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap; /* Buttons wrap if no space */
 }
 
-.name-plate-wrapper {
+/* WRAPPERS (Name, Email, Password) */
+.name-plate-wrapper,
+.email-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 15px;
+  width: 100%; /* Full width of container */
+  max-width: 500px; /* Limit input width */
 }
 
-.name-plate-wrapper input {
-  width: 500px;
-  overflow: hidden;
+.profile-input {
+  width: 100%;
   box-sizing: border-box;
   padding: 12px;
   font-family: "Outfit", sans-serif;
   font-size: 1.1rem;
-}
-
-.email-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 151px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
 .account-email {
   font-size: 1.4rem;
   font-weight: 500;
+  word-break: break-all; /* Prevents long emails from breaking layout */
 }
 
-.email-title {
-  font-weight: 300;
+/* --- RESPONSIVE MEDIA QUERIES --- */
+
+/* For Tablets and smaller */
+@media (max-width: 768px) {
+  .profile-main.open,
+  .profile-main.closed {
+    margin-left: 0; /* Sidebar usually becomes an overlay or disappears on mobile */
+  }
+
+  .account-details {
+    flex-direction: column; /* Stack image and buttons */
+    text-align: center;
+  }
+
+  .profile-buttons {
+    justify-content: center;
+  }
+
+  .profile-content h1 {
+    font-size: 2.2rem !important;
+    text-align: center;
+  }
+
+  .name-plate-wrapper,
+  .email-wrapper {
+    max-width: 100%;
+    align-items: stretch; /* Buttons become full width */
+  }
 }
 
-/* Inside your modal/form CSS */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999; /* Ensure it stays above the sidebar */
+/* For very small phones */
+@media (max-width: 480px) {
+  .profile-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .profile-buttons button {
+    width: 100%; /* Make buttons big and tappable */
+  }
 }

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import "./DashboardPageStyle.css";
+import "animate.css";
 
-export default function DashboardPage() {
+// Receive props from AppRoutes
+export default function DashboardPage({ isOpen, setIsOpen }) {
   const [name, setName] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
 
   const getUser = async () => {
     try {
@@ -33,10 +34,11 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard-page">
-      <Sidebar value={name} isOpen={isOpen} setIsOpen={setIsOpen} />
+      {/* Pass functionality to Sidebar */}
+      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} name={name} />
 
       <main className="dashboard-main">
-        <div className="dashboard-content">
+        <div className="animate__animated animate__fadeInUp dashboard-content">
           <h1 style={{ fontSize: "3rem" }}>Welcome, {name || "User"}</h1>
         </div>
       </main>

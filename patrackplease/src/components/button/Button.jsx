@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 // 1. Add 'onClick' to the props here
-export default function Button({ value, color, onClick }) {
+export default function Button({ value, color, onClick, fontsize }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const defaultColor = color || "#FFF05A";
@@ -13,7 +13,7 @@ export default function Button({ value, color, onClick }) {
     transform: isHovered ? "scale(1.05)" : "scale(1)",
     border: "none",
     borderRadius: "8px",
-    fontSize: "1.2rem",
+    fontSize: fontsize ? fontsize : "1.2rem",
     cursor: "pointer",
     transition: "all 0.2s ease",
   };

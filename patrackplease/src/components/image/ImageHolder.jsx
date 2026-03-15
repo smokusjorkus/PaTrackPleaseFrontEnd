@@ -12,15 +12,21 @@ export default function ImageHolder({
   return (
     <div
       className="image-container"
-      style={{ width, height, overflow: "hidden" }}
+      style={{
+        width,
+        height,
+        overflow: "hidden",
+        borderRadius: "50%", // Makes the container circular
+        border: "4px solid #FFF05A", // Optional: Adds a yellow border to match your brand
+      }}
     >
       <img
         src={src || defaultImage}
-        alt={alt || "User image"}
+        alt={alt || "User profile"}
         style={{
           width: "100%",
           height: "100%",
-          objectFit: "cover", // Ensures image fills the area without stretching // Makes it circular for profile pics
+          objectFit: "cover", // Keeps aspect ratio intact
         }}
       />
     </div>

@@ -6,14 +6,14 @@ import ImageHolder from "../../components/image/ImageHolder";
 import EditInfoForm from "../../components/editinfoform/EditInfoForm";
 import toast from "react-hot-toast";
 
-export default function ProfilePage() {
+export default function ProfilePage({ isOpen, setIsOpen }) {
   const [name, setName] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
-  const [image, setImage] = useState();
   const [email, setEmail] = useState("");
+  const [image, setImage] = useState(""); // Syncs with profileImageUrl
   const [editOpen, setEditOpen] = useState(false);
   const [editType, setEditType] = useState("");
 
+  // FETCH USER DATA
   const getUser = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -26,52 +26,72 @@ export default function ProfilePage() {
       if (!res.ok) throw new Error("Failed to fetch");
 
       const data = await res.json();
+
+      // Syncing state with Backend Model
       setName(data.username);
       setEmail(data.email);
+      // IMPORTANT: Using profileImageUrl to match your Java User.java
+      setImage(data.profileImageUrl || "");
     } catch (error) {
       console.log("Error fetching user:", error);
     }
   };
 
+  // SAVE/UPDATE LOGIC
   const handleSave = async (type, newValue) => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user) return;
 
-      let updateBody = {};
-      if (type === "Photo") updateBody = { imageName: newValue };
-      else if (type === "Email") updateBody = { email: newValue };
-      else if (type === "Password") updateBody = { password: newValue };
-      else updateBody = { username: newValue };
+      let res;
 
-      const res = await fetch(
-        `http://localhost:8080/api/users/update?email=${encodeURIComponent(user.email)}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updateBody),
-        },
-      );
+      if (type === "Photo") {
+        const formData = new FormData();
+        // newValue is the File object or null (for removal)
+        formData.append("file", newValue);
+        formData.append("email", user.email);
+
+        res = await fetch(`http://localhost:8080/api/users/upload-photo`, {
+          method: "POST",
+          body: formData,
+        });
+      } else {
+        let updateBody = {};
+        if (type === "Email") updateBody = { email: newValue };
+        else if (type === "Password") updateBody = { password: newValue };
+        else updateBody = { username: newValue };
+
+        res = await fetch(
+          `http://localhost:8080/api/users/update?email=${encodeURIComponent(user.email)}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updateBody),
+          },
+        );
+      }
 
       if (!res.ok) throw new Error("Update failed");
+
       const updatedData = await res.json();
 
-      // Refresh states
+      // Refreshing UI with fresh data from Backend
       setName(updatedData.username);
       setEmail(updatedData.email);
+      setImage(updatedData.profileImageUrl || ""); // Update to match Java Model
 
-      if (updatedData.email == newValue) {
-        toast.success("Successfully updated Email.");
-      } else {
-        toast.success("Successfully updated Password.");
-      }
-      // Update local storage so the session stays current
       localStorage.setItem("user", JSON.stringify(updatedData));
 
-      setEditOpen(false); // Close modal on success
+      toast.success(
+        newValue === null && type === "Photo"
+          ? "Photo removed."
+          : `Successfully updated ${type}.`,
+      );
+
+      setEditOpen(false);
     } catch (error) {
       console.error("Save error:", error);
-      toast.error("Failed to save changes.");
+      toast.error(`Failed to update ${type}.`);
     }
   };
 
@@ -86,14 +106,16 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-page">
-      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
-      <main className="profile-main">
+      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} name={name} />
+
+      <main className={`profile-main ${isOpen ? "open" : "closed"}`}>
         <div className="profile-content">
           <h1 style={{ fontSize: "3rem" }}>Profile</h1>
 
           <div className="account-details">
             <div className="profile-image">
-              <ImageHolder />
+              {/* Pass the dynamic image state to ImageHolder */}
+              <ImageHolder src={image} />
             </div>
 
             <div className="profile-actions-wrapper">
@@ -102,7 +124,11 @@ export default function ProfilePage() {
                   value="Change Photo"
                   onClick={() => openEditModal("Photo")}
                 />
-                <Button value="Remove Photo" color="#E4E4E4" />
+                <Button
+                  value="Remove Photo"
+                  color="#E4E4E4"
+                  onClick={() => handleSave("Photo", null)}
+                />
               </div>
               <p className="image-desc">JPG or PNG. Max size of 800K</p>
             </div>
@@ -113,9 +139,13 @@ export default function ProfilePage() {
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
               className="profile-input"
-              readOnly // Recommendation: Make this readOnly if you want them to use the Modal to change it
+              readOnly
+            />
+            <Button
+              value="Change Username"
+              onClick={() => openEditModal("Username")}
+              fontsize="1.0rem"
             />
           </div>
 
@@ -124,6 +154,7 @@ export default function ProfilePage() {
             <p className="account-email">{email}</p>
             <Button
               value="Change Email"
+              fontsize="1.0rem"
               onClick={() => openEditModal("Email")}
             />
           </div>
@@ -132,6 +163,7 @@ export default function ProfilePage() {
             <h1 className="email-title">Password</h1>
             <Button
               value="Change Password"
+              fontsize="1.0rem"
               onClick={() => openEditModal("Password")}
             />
           </div>
@@ -141,8 +173,7 @@ export default function ProfilePage() {
           <EditInfoForm
             type={editType}
             onClose={() => setEditOpen(false)}
-            onSave={handleSave} // ADDED: Passing the function as a prop
-            currentValue={editType === "Email" ? email : name}
+            onSave={handleSave}
           />
         )}
       </main>
