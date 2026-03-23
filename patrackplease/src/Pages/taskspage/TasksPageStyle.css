@@ -1,0 +1,46 @@
+.yourtasks-page {
+  min-height: 100vh;
+  background-color: #fffdfa; /* Warm tint */
+  font-family: "Outfit", sans-serif;
+  color: #191919;
+  display: flex;
+}
+
+.tasks-main {
+  flex-grow: 1;
+  transition: margin-left 0.3s ease;
+}
+
+.tasks-content {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tasks-headerbar {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #191919;
+}
+
+/* When Sidebar is Open */
+.tasks-main.open {
+  margin-left: 255px;
+}
+
+/* When Sidebar is Closed/Collapsed */
+.tasks-main.closed {
+  margin-left: 80px; /* Matches the width of your collapsed sidebar */
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .tasks-main.open,
+  .tasks-main.closed {
+    margin-left: 0;
+  }
+}

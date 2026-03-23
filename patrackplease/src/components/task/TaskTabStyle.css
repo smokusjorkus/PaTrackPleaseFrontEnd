@@ -1,0 +1,61 @@
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.add-chore-btn {
+  background-color: #ff785a; /* Accent Coral */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.status-card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  min-width: 160px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+/* Border Bottoms using palette */
+.status-card.upcoming {
+  border-bottom: 4px solid #ffd25a;
+}
+.status-card.completed {
+  border-bottom: 4px solid #ffec1f;
+}
+.status-card.overdue {
+  border-bottom: 4px solid #ff785a;
+}
+
+.date-group-label {
+  border-bottom: 2px solid #ffab5c; /* Primary Orange */
+  width: fit-content;
+  padding-bottom: 5px;
+  margin: 30px 0 20px 0;
+}
+
+.done-btn {
+  margin-top: 15px;
+  background: white;
+  color: #191919;
+  border: 2px solid #ffec1f; /* Highlight Yellow */
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.done-btn:hover {
+  background: #ffec1f;
+}

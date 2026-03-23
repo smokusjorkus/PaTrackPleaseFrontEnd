@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   User,
   Search,
@@ -13,9 +13,42 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import "./SidebarStyle.css";
 import toast from "react-hot-toast";
 
-export default function Sidebar({ isOpen, setIsOpen, name }) {
+export default function Sidebar({ isOpen, setIsOpen }) {
   const nav = useNavigate();
   const location = useLocation();
+
+  // State for user data fetched from API
+  const [userName, setUserName] = useState("");
+  const [image, setImage] = useState("");
+
+  const getUser = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user || !user.email) return;
+
+      const res = await fetch(
+        `http://localhost:8080/api/users/email?email=${encodeURIComponent(user.email)}`,
+      );
+
+      if (!res.ok) {
+        console.log("Failed to fetch user");
+        return;
+      }
+
+      const data = await res.json();
+
+      // Update states with backend data
+      setUserName(data.username);
+      // Ensure we handle cases where profileImageUrl might be null
+      setImage(data.profileImageUrl || "");
+    } catch (error) {
+      console.log("Error fetching user:", error);
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const handlelogout = () => {
     localStorage.clear();
@@ -27,23 +60,27 @@ export default function Sidebar({ isOpen, setIsOpen, name }) {
     <div className={`Sidebar-container ${isOpen ? "open" : "closed"}`}>
       <div className="sidebar-profile-container">
         <div className="account">
-          <User size={30} />
-          {/* Logic: Label only shows if sidebar is open */}
+          {/* Conditional Rendering: Show image if it exists, otherwise show Icon */}
+          {image ? (
+            <img src={image} alt="Profile" className="profile-img-sidebar" />
+          ) : (
+            <User size={30} />
+          )}
+
           {isOpen && (
             <p className="animate__animated animate__fadeIn">
-              {name || "User"}
+              {userName || "User"}
             </p>
           )}
         </div>
         <Menu
-          onClick={() => setIsOpen(!isOpen)} // The toggle functionality
+          onClick={() => setIsOpen(!isOpen)}
           style={{ cursor: "pointer" }}
           className="menu-icon"
         />
       </div>
 
       <nav className="navigation-links">
-        {/* Keeping all your original buttons and labels */}
         <div className="sidebar-btn">
           <CirclePlus />
           {isOpen && <p>Add new Task</p>}
@@ -60,15 +97,19 @@ export default function Sidebar({ isOpen, setIsOpen, name }) {
           </div>
         </Link>
 
-        <div className="sidebar-btn">
-          <SquareCheck />
-          {isOpen && <p>Your Tasks</p>}
-        </div>
+        <Link to="/YourTasks" style={{ textDecoration: "none" }}>
+          <div className="sidebar-btn">
+            <SquareCheck />
+            {isOpen && <p>Your Tasks</p>}
+          </div>
+        </Link>
 
-        <div className="sidebar-btn">
-          <Search />
-          {isOpen && <p>Search Tasks</p>}
-        </div>
+        <Link to="#" style={{ textDecoration: "none" }}>
+          <div className="sidebar-btn">
+            <Search />
+            {isOpen && <p>Search Tasks</p>}
+          </div>
+        </Link>
 
         <Link
           to="/profile"

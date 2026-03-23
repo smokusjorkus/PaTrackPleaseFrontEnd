@@ -4,18 +4,33 @@ import LandingPage from "../Pages/landingpage/LandingPage";
 import Login from "../Pages/loginpage/LoginPage";
 import DashboardPage from "../Pages/dashboardpage/DashboardPage";
 import ProfilePage from "../Pages/profilepage/ProfilePage";
+import Register from "../Pages/registerpage/RegisterPage";
+import TasksPage from "../Pages/taskspage/TasksPage";
 
 export default function AppRoutes({ isOpen, setIsOpen }) {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<Login />} />
+      <Route
+        path="/"
+        element={<LandingPage isOpen={isOpen} setIsOpen={setIsOpen} />}
+      />
+      <Route
+        path="/login"
+        element={<Login isOpen={isOpen} setIsOpen={setIsOpen} />}
+      />
+      <Route
+        path="/Register"
+        element={<Register isOpen={isOpen} setIsOpen={setIsOpen} />}
+      />
+      <Route
+        path="/YourTasks"
+        element={<TasksPage isOpen={isOpen} setIsOpen={setIsOpen} />}
+      />
 
       <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
-            {/* Pass props to the Dashboard Page */}
             <DashboardPage isOpen={isOpen} setIsOpen={setIsOpen} />
           </ProtectedRoute>
         }
@@ -25,7 +40,6 @@ export default function AppRoutes({ isOpen, setIsOpen }) {
         path="/profile"
         element={
           <ProtectedRoute>
-            {/* Pass props to the Profile Page */}
             <ProfilePage isOpen={isOpen} setIsOpen={setIsOpen} />
           </ProtectedRoute>
         }

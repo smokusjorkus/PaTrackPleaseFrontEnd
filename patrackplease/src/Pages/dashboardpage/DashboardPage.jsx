@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
+import { FiClock, FiCheckCircle, FiAlertCircle } from "react-icons/fi";
 import "./DashboardPageStyle.css";
 import "animate.css";
 
-// Receive props from AppRoutes
 export default function DashboardPage({ isOpen, setIsOpen }) {
   const [name, setName] = useState("");
 
@@ -16,13 +16,10 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
         `http://localhost:8080/api/users/email?email=${encodeURIComponent(user.email)}`,
       );
 
-      if (!res.ok) {
-        console.log("Failed to fetch user");
-        return;
+      if (res.ok) {
+        const data = await res.json();
+        setName(data.username);
       }
-
-      const data = await res.json();
-      setName(data.username);
     } catch (error) {
       console.log("Error fetching user:", error);
     }
@@ -34,12 +31,14 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
 
   return (
     <div className="dashboard-page">
-      {/* Pass functionality to Sidebar */}
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} name={name} />
 
-      <main className="dashboard-main">
-        <div className="animate__animated animate__fadeInUp dashboard-content">
-          <h1 style={{ fontSize: "3rem" }}>Welcome, {name || "User"}</h1>
+      <main className={`dashboard-main ${isOpen ? "open" : "closed"}`}>
+        <div className="animate__animated animate__fadeIn dashboard-content">
+          <header className="dashboard-header">
+            <h1>Hello, {name || "User"}!</h1>
+            <p>Ready to get started?</p>
+          </header>
         </div>
       </main>
     </div>

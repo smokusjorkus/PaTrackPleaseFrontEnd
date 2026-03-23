@@ -105,7 +105,7 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
   };
 
   return (
-    <div className="profile-page">
+    <div className="profile-page animate__animated animate__fadeIn">
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} name={name} />
 
       <main className={`profile-main ${isOpen ? "open" : "closed"}`}>

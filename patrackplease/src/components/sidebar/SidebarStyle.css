@@ -43,6 +43,16 @@
   font-weight: 500;
 }
 
+/* NEW: Styles for the Profile Image */
+.profile-img-sidebar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #fff05a;
+  flex-shrink: 0;
+}
+
 .navigation-links {
   display: flex;
   flex-direction: column;
@@ -64,9 +74,10 @@
   background: #e9ecef;
 }
 
-.sidebar-btn.active {
+/* Updated active state to work with Link classes */
+.sidebar-link.active .sidebar-btn {
   background: #dee2e6;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .sidebar-btn svg {
@@ -81,7 +92,7 @@
   white-space: nowrap;
 }
 
-/* closed state */
+/* closed state logic */
 .Sidebar-container.closed .sidebar-btn p,
 .Sidebar-container.closed .account p {
   display: none;
@@ -97,26 +108,16 @@
   align-items: center;
 }
 
-.Sidebar-container.closed .account {
-  justify-content: center;
-}
-
-/* tablet */
+/* Tablet & Mobile Media Queries */
 @media (max-width: 1024px) {
   .Sidebar-container.open {
     width: 220px;
   }
-
   .Sidebar-container.closed {
     width: 70px;
   }
-
-  .sidebar-btn p {
-    font-size: 13px;
-  }
 }
 
-/* mobile */
 @media (max-width: 768px) {
   .Sidebar-container {
     width: 220px;
@@ -126,47 +127,16 @@
 
   .Sidebar-container.open {
     transform: translateX(0);
-    width: 220px;
   }
 
+  /* On mobile, usually you want the sidebar to overlay, so "closed" means hidden */
   .Sidebar-container.closed {
     transform: translateX(-100%);
-    width: 220px;
   }
 
+  /* Resetting display for mobile view within sidebar */
   .Sidebar-container.closed .sidebar-btn p,
   .Sidebar-container.closed .account p {
     display: block;
-  }
-
-  .Sidebar-container.closed .sidebar-btn {
-    justify-content: flex-start;
-  }
-
-  .Sidebar-container.closed .sidebar-profile-container {
-    flex-direction: row;
-    gap: 0;
-    align-items: center;
-  }
-
-  .Sidebar-container.closed .account {
-    justify-content: flex-start;
-  }
-}
-
-/* small phones */
-@media (max-width: 480px) {
-  .Sidebar-container,
-  .Sidebar-container.open,
-  .Sidebar-container.closed {
-    width: 200px;
-  }
-
-  .sidebar-btn {
-    padding: 9px 10px;
-  }
-
-  .sidebar-btn p {
-    font-size: 12px;
   }
 }

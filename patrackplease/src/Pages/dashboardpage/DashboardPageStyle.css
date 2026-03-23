@@ -1,46 +1,31 @@
 .dashboard-page {
   min-height: 100vh;
-  background-color: white;
+  background-color: #fffdfa; /* Warm tint */
   font-family: "Outfit", sans-serif;
+  color: #191919;
+  display: flex;
 }
 
 .dashboard-main {
-  margin-left: 255px; /* sidebar width */
-  min-height: 100vh;
+  flex-grow: 1;
   transition: margin-left 0.3s ease;
 }
 
+.dashboard-main.open {
+  margin-left: 255px;
+}
+.dashboard-main.closed {
+  margin-left: 80px;
+}
+
 .dashboard-content {
-  width: 100%;
   padding: 40px;
-  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* tablet */
-@media (max-width: 1024px) {
-  .dashboard-main {
-    margin-left: 220px;
-  }
-
-  .dashboard-content {
-    padding: 30px;
-  }
-}
-
-/* mobile */
-@media (max-width: 768px) {
-  .dashboard-main {
-    margin-left: 0;
-  }
-
-  .dashboard-content {
-    padding: 20px;
-  }
-}
-
-/* small phones */
-@media (max-width: 480px) {
-  .dashboard-content {
-    padding: 15px;
-  }
+.dashboard-header h1 {
+  font-size: 3rem;
+  color: #191919;
+  margin-bottom: 10px;
 }
