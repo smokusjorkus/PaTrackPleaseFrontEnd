@@ -24,7 +24,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #191;
+  border-bottom: 2px solid #191919;
 }
 
 /* When Sidebar is Open */
