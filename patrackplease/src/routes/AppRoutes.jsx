@@ -22,9 +22,14 @@ export default function AppRoutes({ isOpen, setIsOpen }) {
         path="/Register"
         element={<Register isOpen={isOpen} setIsOpen={setIsOpen} />}
       />
+
       <Route
         path="/YourTasks"
-        element={<TasksPage isOpen={isOpen} setIsOpen={setIsOpen} />}
+        element={
+          <ProtectedRoute>
+            <TasksPage isOpen={isOpen} setIsOpen={setIsOpen} />
+          </ProtectedRoute>
+        }
       />
 
       <Route

@@ -1,61 +1,100 @@
-.task-header {
+.task-tab-container {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 30px;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
 }
 
-.add-chore-btn {
-  background-color: #ff785a; /* Accent Coral */
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.status-card {
-  background: white;
+.task-container {
   padding: 20px;
-  border-radius: 16px;
-  min-width: 160px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-}
-
-/* Border Bottoms using palette */
-.status-card.upcoming {
-  border-bottom: 4px solid #ffd25a;
-}
-.status-card.completed {
-  border-bottom: 4px solid #ffec1f;
-}
-.status-card.overdue {
-  border-bottom: 4px solid #ff785a;
-}
-
-.date-group-label {
-  border-bottom: 2px solid #ffab5c; /* Primary Orange */
-  width: fit-content;
-  padding-bottom: 5px;
-  margin: 30px 0 20px 0;
-}
-
-.done-btn {
-  margin-top: 15px;
-  background: white;
-  color: #191919;
-  border: 2px solid #ffec1f; /* Highlight Yellow */
-  padding: 10px;
-  border-radius: 8px;
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
+  background-color: white;
+  border-radius: 12px;
+  border-bottom: 1px solid #eee;
+  border-left: 8px solid transparent;
+  box-shadow: 0 4px 12px rgba(25, 25, 25, 0.05);
+  transition: all 0.3s ease;
+}
+
+/* Flex Sections */
+.taskright-side {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.taskleft-side {
+  display: flex;
+  flex-direction: row;
+  gap: 10px; /* Space between Edit and Delete buttons */
+}
+
+/* Typography */
+.task-title h4 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #191919;
+  font-weight: 700;
+}
+
+.task-description p {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+  font-weight: 300;
+}
+
+.task-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.task-duedate {
+  font-size: 0.85rem;
+  color: #191919;
   font-weight: 600;
 }
 
-.done-btn:hover {
-  background: #ffec1f;
+.task-status-pill {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+/* Dynamic Status Logic - Sunset Palette */
+
+/* Done (Greenish-Yellow Tint) */
+.task-container.done {
+  border-left-color: #1fff2a; /* FFEC1F */
+  background-color: rgba(179, 248, 159, 0.05);
+}
+
+/* Overdue (Coral/Red) */
+.task-container.overdue {
+  border-left-color: #ff785a; /* FF785A */
+  background-color: rgba(255, 120, 90, 0.05);
+}
+
+.task-container.overdue .task-title h4 {
+  color: #ff785a;
+}
+
+/* Upcoming (Yellow/Orange) */
+.task-container.upcoming {
+  border-left-color: #ffd25a; /* FFD25A */
+  background-color: rgba(255, 210, 90, 0.05);
+}
+
+.no-tasks {
+  text-align: center;
+  color: #666;
+  padding: 40px;
+  font-style: italic;
 }

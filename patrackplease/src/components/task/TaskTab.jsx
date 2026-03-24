@@ -1,27 +1,41 @@
 import React from "react";
 import "./TaskTabStyle.css";
-import { FiEdit2, FiTrash2, FiCheckCircle } from "react-icons/fi";
+import "animate.css";
+import Button from "../button/Button";
 
-export default function TaskTab() {
-  // These would eventually come from your Spring Boot backend
-  const testTasks = [
-    {
-      id: 1,
-      taskName: "Laundry",
-      taskDescription: "Wash and fold the whites",
-      dueDate: "Sunday, Mar 8",
-      time: "12:00 PM",
-      status: "Upcoming",
-    },
-    {
-      id: 2,
-      taskName: "Kitchen Trash",
-      taskDescription: "Take out the bins before pickup",
-      dueDate: "Thursday, Mar 12",
-      time: "10:30 AM",
-      status: "Overdue",
-    },
-  ];
+export default function TaskTab({ tasks }) {
+  return (
+    <div className="task-tab-container animate__animated animate__fadeInUp">
+      {tasks && tasks.length > 0 ? (
+        tasks.map((task) => (
+          <div
+            key={task.id}
+            className={`task-container ${task.status.toLowerCase()}`}
+          >
+            {/* Right Side: Task Information */}
+            <div className="taskright-side">
+              <div className="task-title">
+                <h4>{task.taskName}</h4>
+              </div>
+              <div className="task-description">
+                <p>{task.taskDescription}</p>
+              </div>
+              <div className="task-meta">
+                <span className="task-duedate">{task.dueDate}</span>
+                <span className="task-status-pill">{task.status}</span>
+              </div>
+            </div>
 
-  return <div className="task-tab-container"></div>;
+            {/* Left Side: Action Buttons */}
+            <div className="taskleft-side">
+              <Button value="Edit" fontsize="1rem" />
+              <Button value="Delete" color="#ff785a" fontsize="1rem" />
+            </div>
+          </div>
+        ))
+      ) : (
+        <p className="no-tasks">No tasks assigned for today.</p>
+      )}
+    </div>
+  );
 }
