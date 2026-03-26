@@ -4,10 +4,12 @@ import "animate.css";
 import "./TasksPageStyle.css";
 import TaskTab from "../../components/task/TaskTab";
 import Button from "../../components/button/Button";
+import AddNewTaskForm from "../../components/addnewtask/AddNewTaskForm";
 
 export default function TasksPage({ isOpen, setIsOpen }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
   // Fetch tasks on component mount
   useEffect(() => {
@@ -44,8 +46,15 @@ export default function TasksPage({ isOpen, setIsOpen }) {
             <h1 style={{ fontSize: "3rem" }}>Your Tasks</h1>
             <p>{tasks.length} tasks assigned to you</p>
           </div>
-          <Button value="Add New Task" />
+          <Button value="Add New Task" onClick={() => setShowForm(true)} />
         </div>
+
+        {showForm && (
+          <AddNewTaskForm
+            onClose={() => setShowForm(false)}
+            refreshTasks={fetchUserTasks}
+          />
+        )}
 
         <div className="tasks-content">
           {loading ? (

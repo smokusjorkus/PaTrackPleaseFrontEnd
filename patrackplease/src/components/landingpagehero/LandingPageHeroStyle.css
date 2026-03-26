@@ -35,22 +35,6 @@
   opacity: 0.45;
 }
 
-/* Balatro layer */
-.balatro-wrapper {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.balatro-wrapper > * {
-  width: 100%;
-  height: 100%;
-}
-
 /* content stays on top */
 .hero-content {
   position: relative;

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import AddNewTaskForm from "../../components/addnewtask/AddNewTaskForm";
 import {
   User,
   Search,
@@ -20,6 +21,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
   // State for user data fetched from API
   const [userName, setUserName] = useState("");
   const [image, setImage] = useState("");
+  const [showForm, setShowForm] = useState(false);
 
   const getUser = async () => {
     try {
@@ -81,10 +83,12 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       </div>
 
       <nav className="navigation-links">
-        <div className="sidebar-btn">
+        <div className="sidebar-btn" onClick={() => setShowForm(true)}>
           <CirclePlus />
-          {isOpen && <p>Add new Task</p>}
+          {isOpen && <p>Add New Task</p>}
         </div>
+
+        {showForm && <AddNewTaskForm onClose={() => setShowForm(false)} />}
 
         <Link
           to="/dashboard"
