@@ -9,20 +9,6 @@ export default function LandingPageHero() {
     <section className="hero-first">
       <div className="hero-background-glow"></div>
 
-      <div className="balatro-wrapper">
-        <Balatro
-          spinRotation={-2}
-          spinSpeed={7}
-          color1="#fff05a"
-          color2="#ff6e5a"
-          color3="#ffd25a"
-          contrast={3.5}
-          lighting={0.4}
-          spinAmount={0.25}
-          pixelFilter={745}
-        />
-      </div>
-
       <div className="hero-content animate__animated animate__fadeInUp">
         <h1 className="hero-title">PaTrack Please</h1>
 
