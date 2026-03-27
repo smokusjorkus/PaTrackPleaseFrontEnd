@@ -3,6 +3,7 @@ import "./TaskTabStyle.css";
 import "animate.css";
 import Button from "../button/Button";
 import { toast } from "react-hot-toast";
+import { Bell } from "lucide-react";
 
 export default function TaskTab({ tasks, refreshTasks }) {
   const handleMarkAsDone = async (id) => {
@@ -75,6 +76,14 @@ export default function TaskTab({ tasks, refreshTasks }) {
             </div>
 
             <div className="taskleft-side">
+              <Button
+                fontsize="1rem"
+                color="#f0f3ed"
+                onClick={() => handleAlarm(task.id)}
+              >
+                <Bell size={18} />
+                Set Alarm
+              </Button>
               <Button value="Edit" fontsize="1rem" />
               <Button
                 value="Delete"
