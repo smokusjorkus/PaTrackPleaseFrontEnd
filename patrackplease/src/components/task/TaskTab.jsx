@@ -3,8 +3,34 @@ import "./TaskTabStyle.css";
 import "animate.css";
 import Button from "../button/Button";
 import { toast } from "react-hot-toast";
+import { Bell } from "lucide-react";
 
 export default function TaskTab({ tasks, refreshTasks }) {
+  const handleMarkAsDone = async (id) => {
+    const confirmDone = window.confirm("Are you done with this task?");
+    if (!confirmDone) return;
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/tasks/${id}/status?status=DONE`,
+        {
+          method: "PUT",
+        },
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to mark task as done.");
+      }
+
+      toast.success("Task marked as done ✅");
+      console.log("Task status changed!");
+      await refreshTasks();
+    } catch (error) {
+      console.error("Mark as done error:", error);
+      toast.error(error.message || "Something went wrong.");
+    }
+  };
+
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this task?",
@@ -16,15 +42,15 @@ export default function TaskTab({ tasks, refreshTasks }) {
         method: "DELETE",
       });
 
-      if (res.ok) {
-        // Trigger the parent to re-fetch the updated list
-        refreshTasks();
-        toast.success("Task deleted successfully.");
-      } else {
-        toast.error("Server error: Could not delete task.");
+      if (!res.ok) {
+        throw new Error("Server error: Could not delete task.");
       }
+
+      await refreshTasks();
+      toast.success("Task deleted successfully.");
     } catch (error) {
-      toast.erorr("Delete request failed:", error);
+      console.error("Delete request failed:", error);
+      toast.error(error.message || "Delete request failed.");
     }
   };
 
@@ -36,7 +62,6 @@ export default function TaskTab({ tasks, refreshTasks }) {
             key={task.id}
             className={`task-container ${task.status ? task.status.toLowerCase() : "upcoming"}`}
           >
-            {/* Right Side: Task Information */}
             <div className="taskright-side">
               <div className="task-title">
                 <h4>{task.taskName}</h4>
@@ -50,14 +75,27 @@ export default function TaskTab({ tasks, refreshTasks }) {
               </div>
             </div>
 
-            {/* Left Side: Action Buttons */}
             <div className="taskleft-side">
+              <Button
+                fontsize="1rem"
+                color="#f0f3ed"
+                onClick={() => handleAlarm(task.id)}
+              >
+                <Bell size={18} />
+                Set Alarm
+              </Button>
               <Button value="Edit" fontsize="1rem" />
               <Button
                 value="Delete"
                 color="#ff785a"
                 fontsize="1rem"
                 onClick={() => handleDelete(task.id)}
+              />
+              <Button
+                value="Mark as Done"
+                color="#1fff2a"
+                fontsize="1rem"
+                onClick={() => handleMarkAsDone(task.id)}
               />
             </div>
           </div>

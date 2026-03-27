@@ -101,7 +101,11 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           </div>
         </Link>
 
-        <Link to="/YourTasks" style={{ textDecoration: "none" }}>
+        <Link
+          to="/YourTasks"
+          style={{ textDecoration: "none" }}
+          className={`sidebar-link ${location.pathname === "/YourTasks" ? "active" : ""}`}
+        >
           <div className="sidebar-btn">
             <SquareCheck />
             {isOpen && <p>Your Tasks</p>}

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
-// 1. Add 'onClick' to the props here
-export default function Button({ value, color, onClick, fontsize }) {
+export default function Button({ value, color, onClick, fontsize, children }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const defaultColor = color || "#FFF05A";
@@ -16,17 +15,20 @@ export default function Button({ value, color, onClick, fontsize }) {
     fontSize: fontsize ? fontsize : "1.2rem",
     cursor: "pointer",
     transition: "all 0.2s ease",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "6px", // nice spacing if icon + text
   };
 
   return (
     <button
       style={buttonStyle}
-      // 2. Attach the onClick prop to the actual button element
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {value}
+      {children ? children : value}
     </button>
   );
 }

@@ -21,6 +21,7 @@ export default function AddNewTaskForm({ onClose, refreshTasks }) {
         toast.error("User not found. Please log in again.");
         return;
       }
+
       if (!taskName.trim() || !taskDescription.trim() || !dueDate || !status) {
         toast.error("Please fill in all fields.");
         return;
@@ -54,19 +55,23 @@ export default function AddNewTaskForm({ onClose, refreshTasks }) {
       );
 
       if (!res.ok) {
-        throw new Error(responseText || "Failed to create task");
+        const errorText = await res.text();
+        throw new Error(errorText || "Failed to create task");
       }
 
-      if (refreshTasks) {
-        await refreshTasks();
-      }
+      console.log("Task created successfully");
+      toast.success("Task has successfully created.");
 
       onClose();
+
       nav("/YourTasks");
-      toast.success("Task has successfully created.");
+
+      if (refreshTasks) {
+        refreshTasks();
+      }
     } catch (error) {
       console.error("Error creating task:", error);
-      toast.error(error.message);
+      toast.error(error.message || "Something went wrong.");
     } finally {
       setLoading(false);
     }
