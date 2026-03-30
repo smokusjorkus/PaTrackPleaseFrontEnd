@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 
-export default function Button({ value, color, onClick, fontsize, children }) {
+export default function Button({
+  value,
+  color,
+  onClick,
+  fontsize,
+  children,
+  className,
+  fontWeight,
+}) {
   const [isHovered, setIsHovered] = useState(false);
 
   const defaultColor = color || "#FFF05A";
@@ -19,12 +27,14 @@ export default function Button({ value, color, onClick, fontsize, children }) {
     alignItems: "center",
     justifyContent: "center",
     gap: "6px", // nice spacing if icon + text
+    fontWeight: fontWeight ? fontWeight : "500",
   };
 
   return (
     <button
       style={buttonStyle}
       onClick={onClick}
+      className={className}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

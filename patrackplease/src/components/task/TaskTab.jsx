@@ -1,109 +1,250 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./TaskTabStyle.css";
 import "animate.css";
 import Button from "../button/Button";
 import { toast } from "react-hot-toast";
-import { Bell } from "lucide-react";
+import { Bell, Calendar } from "lucide-react";
+import SetAlarmTab from "../setalarmtab/SetAlarmTab";
+import Icantgettoyou from "../../assets/Icantgettoyou.wav";
 
-export default function TaskTab({ tasks, refreshTasks }) {
+export default function TaskTab({
+  tasks,
+  refreshTasks,
+  alarms,
+  refreshAllAlarms,
+  refreshTaskAlarms,
+}) {
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTaskAlarms, setSelectedTaskAlarms] = useState([]);
+
+  // Refs for logic management
+  const triggeredAlarms = useRef(new Set());
+  const activeAudio = useRef(null);
+
+  // 1. Function to stop the alarm sound safely
+  const stopAlarm = () => {
+    if (activeAudio.current) {
+      activeAudio.current.pause();
+      activeAudio.current.currentTime = 0;
+      activeAudio.current = null;
+      toast.dismiss(); // Clears the custom "Dismiss" toast
+    }
+  };
+
+  // 2. Audio Unlocker (Required by Browser Policy)
+  useEffect(() => {
+    const unlock = () => {
+      const silent = new Audio(Icantgettoyou);
+      silent.volume = 0;
+      silent.play().catch(() => {});
+      window.removeEventListener("click", unlock);
+    };
+    window.addEventListener("click", unlock);
+    return () => window.removeEventListener("click", unlock);
+  }, []);
+
+  // 3. The Refined Alarm Scheduler
+  useEffect(() => {
+    if (!alarms || alarms.length === 0) return;
+
+    const interval = setInterval(() => {
+      const now = new Date();
+
+      alarms.forEach((alarm) => {
+        if (!alarm.alarmStart) return;
+        if (triggeredAlarms.current.has(alarm.id)) return;
+
+        // Parse to Local Time
+        const alarmTime = new Date(alarm.alarmStart.replace("Z", ""));
+        const diffMs = now - alarmTime;
+
+        /**
+         * SAFETY TRIGGER CONDITION:
+         * 1. diffMs >= 0: The time has arrived or passed.
+         * 2. diffMs < 60000: It happened within the last 60 seconds.
+         * (This prevents 30+ old alarms from firing at once on refresh!)
+         */
+        if (diffMs >= 0 && diffMs < 60000) {
+          console.log(`🚀 TRIGGERING: ${alarm.alarmName}`);
+          triggeredAlarms.current.add(alarm.id);
+
+          // Only start a new audio instance if one isn't already playing
+          if (!activeAudio.current) {
+            const alarmSound = new Audio(Icantgettoyou);
+            alarmSound.loop = true;
+            activeAudio.current = alarmSound;
+            alarmSound.play().catch((err) => {
+              console.warn("Audio blocked. Click the page!", err);
+            });
+          }
+
+          // Custom Toast with Dismiss Button
+          toast.custom(
+            (t) => (
+              <div
+                className={`animate__animated ${t.visible ? "animate__fadeInDown" : "animate__fadeOutUp"} custom-alarm-toast`}
+              >
+                <div className="toast-content-wrapper">
+                  <Bell size={24} className="ringing-bell" />
+                  <div className="toast-text">
+                    <p className="toast-name">
+                      {alarm.alarmName || "Task Reminder"}
+                    </p>
+                    <p className="toast-sub">Time to get to work!</p>
+                  </div>
+                </div>
+                <button
+                  className="stop-alarm-btn"
+                  onClick={() => {
+                    stopAlarm();
+                    toast.dismiss(t.id);
+                  }}
+                >
+                  DISMISS
+                </button>
+              </div>
+            ),
+            { duration: Infinity },
+          );
+        }
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+      stopAlarm();
+    };
+  }, [alarms]);
+
+  // --- CRUD Handlers ---
   const handleMarkAsDone = async (id) => {
     const confirmDone = window.confirm("Are you done with this task?");
     if (!confirmDone) return;
-
     try {
       const res = await fetch(
         `http://localhost:8080/api/tasks/${id}/status?status=DONE`,
-        {
-          method: "PUT",
-        },
+        { method: "PUT" },
       );
-
-      if (!res.ok) {
-        throw new Error("Failed to mark task as done.");
+      if (res.ok) {
+        toast.success("Task marked as done ✅");
+        await refreshTasks();
       }
-
-      toast.success("Task marked as done ✅");
-      console.log("Task status changed!");
-      await refreshTasks();
     } catch (error) {
-      console.error("Mark as done error:", error);
-      toast.error(error.message || "Something went wrong.");
+      toast.error("Failed to update task.");
     }
   };
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this task?",
-    );
-    if (!confirmDelete) return;
-
+    if (!window.confirm("Delete this task?")) return;
     try {
       const res = await fetch(`http://localhost:8080/api/tasks/${id}`, {
         method: "DELETE",
       });
-
-      if (!res.ok) {
-        throw new Error("Server error: Could not delete task.");
+      if (res.ok) {
+        await refreshTasks();
+        await refreshAllAlarms();
+        toast.success("Task deleted.");
       }
-
-      await refreshTasks();
-      toast.success("Task deleted successfully.");
     } catch (error) {
-      console.error("Delete request failed:", error);
-      toast.error(error.message || "Delete request failed.");
+      toast.error("Delete failed.");
     }
+  };
+
+  const handleOpenAlarmModal = async (task) => {
+    if (!task?.id) return;
+    const taskAlarmData = await refreshTaskAlarms(task.id);
+    setSelectedTask(task);
+    setSelectedTaskAlarms(taskAlarmData || []);
+  };
+
+  const getStatusClass = (status) => {
+    if (!status) return "upcoming";
+    return status.toLowerCase().trim().replace(/\s+/g, "");
   };
 
   return (
     <div className="task-tab-container animate__animated animate__fadeInUp">
       {tasks && tasks.length > 0 ? (
-        tasks.map((task) => (
-          <div
-            key={task.id}
-            className={`task-container ${task.status ? task.status.toLowerCase() : "upcoming"}`}
-          >
-            <div className="taskright-side">
-              <div className="task-title">
-                <h4>{task.taskName}</h4>
+        tasks.map((task) => {
+          const taskAlarms = alarms.filter((alarm) => alarm.taskId === task.id);
+          return (
+            <div
+              key={task.id}
+              className={`task-container ${getStatusClass(task.status)}`}
+            >
+              <div className="task-header-row">
+                <div className="task-info-side">
+                  <div className="task-title">
+                    <h4>{task.taskName}</h4>
+                  </div>
+                  <div className="task-description">
+                    <p>{task.taskDescription}</p>
+                  </div>
+                  <div className="task-meta">
+                    <span className="task-duedate">
+                      <Calendar size={14} /> {task.dueDate}
+                    </span>
+                    <span className="task-status-pill">{task.status}</span>
+                  </div>
+                </div>
+                <div className="task-actions-side">
+                  <Button
+                    color="#f0f3ed"
+                    onClick={() => handleOpenAlarmModal(task)}
+                    fontsize="0.9rem"
+                  >
+                    <Bell size={16} /> Alarm
+                  </Button>
+                  <Button value="Edit" fontsize="0.9rem" />
+                  <Button
+                    value="Delete"
+                    color="#ff785a"
+                    onClick={() => handleDelete(task.id)}
+                    fontsize="0.9rem"
+                  />
+                  {task.status !== "DONE" && (
+                    <Button
+                      value="Done"
+                      color="#1fff2a"
+                      onClick={() => handleMarkAsDone(task.id)}
+                      fontsize="0.9rem"
+                    />
+                  )}
+                </div>
               </div>
-              <div className="task-description">
-                <p>{task.taskDescription}</p>
-              </div>
-              <div className="task-meta">
-                <span className="task-duedate">📅 {task.dueDate}</span>
-                <span className="task-status-pill">{task.status}</span>
-              </div>
+              {taskAlarms.length > 0 && (
+                <div className="task-alarms-footer">
+                  <p className="alarm-label">Active Alarms:</p>
+                  <div className="alarm-pills-container">
+                    {taskAlarms.map((alarm) => (
+                      <div key={alarm.id} className="alarm-pill">
+                        <Bell size={12} color="#ffd25a" />
+                        <span>{alarm.alarmName}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-
-            <div className="taskleft-side">
-              <Button
-                fontsize="1rem"
-                color="#f0f3ed"
-                onClick={() => handleAlarm(task.id)}
-              >
-                <Bell size={18} />
-                Set Alarm
-              </Button>
-              <Button value="Edit" fontsize="1rem" />
-              <Button
-                value="Delete"
-                color="#ff785a"
-                fontsize="1rem"
-                onClick={() => handleDelete(task.id)}
-              />
-              <Button
-                value="Mark as Done"
-                color="#1fff2a"
-                fontsize="1rem"
-                onClick={() => handleMarkAsDone(task.id)}
-              />
-            </div>
-          </div>
-        ))
+          );
+        })
       ) : (
         <div className="no-tasks-container">
           <p className="no-tasks">No tasks assigned for today.</p>
         </div>
+      )}
+
+      {selectedTask && (
+        <SetAlarmTab
+          task={selectedTask}
+          alarms={selectedTaskAlarms}
+          onClose={() => {
+            setSelectedTask(null);
+            setSelectedTaskAlarms([]);
+          }}
+          refreshTasks={refreshTasks}
+          refreshAllAlarms={refreshAllAlarms}
+        />
       )}
     </div>
   );

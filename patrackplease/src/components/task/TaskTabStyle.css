@@ -1,100 +1,203 @@
 .task-tab-container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
   width: 100%;
+  padding-bottom: 50px;
 }
 
 .task-container {
-  padding: 20px;
+  display: flex;
+  flex-direction: column; /* Vertical stack for Rows */
+  padding: 24px;
+  background-color: white;
+  border-radius: 16px;
+  border-left: 8px solid transparent;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease;
+}
+
+.task-container:hover {
+  transform: translateY(-2px);
+}
+
+/* Row 1: Header (Info + Buttons) */
+.task-header-row {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
-  background-color: white;
-  border-radius: 12px;
-  border-bottom: 1px solid #eee;
-  border-left: 8px solid transparent;
-  box-shadow: 0 4px 12px rgba(25, 25, 25, 0.05);
-  transition: all 0.3s ease;
+  align-items: flex-start;
+  width: 100%;
+  gap: 20px;
 }
 
-/* Flex Sections */
-.taskright-side {
+.task-info-side {
+  flex: 1; /* Takes up all left space */
+}
+
+.task-actions-side {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 400px;
 }
 
-.taskleft-side {
-  display: flex;
-  flex-direction: row;
-  gap: 10px; /* Space between Edit and Delete buttons */
-}
-
-/* Typography */
+/* Typography & Meta */
 .task-title h4 {
-  font-size: 1.5rem;
-  margin: 0;
-  color: #191919;
-  font-weight: 700;
+  font-size: 1.4rem;
+  margin: 0 0 8px 0;
+  color: #1a1a1a;
 }
 
 .task-description p {
-  margin: 0;
-  font-size: 1rem;
-  color: #666;
-  font-weight: 300;
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
 }
 
 .task-meta {
   display: flex;
-  gap: 12px;
+  gap: 15px;
   align-items: center;
-  margin-top: 4px;
 }
 
 .task-duedate {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-size: 0.85rem;
-  color: #191919;
   font-weight: 600;
+  color: #374151;
 }
 
 .task-status-pill {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+/* Row 2: Alarms Section */
+.task-alarms-footer {
+  margin-top: 18px;
+  padding-top: 15px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.alarm-label {
+  font-size: 0.75rem;
   font-weight: 700;
-  opacity: 0.8;
+  color: #9ca3af;
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
 }
 
-/* Dynamic Status Logic - Sunset Palette */
+.alarm-pills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 
-/* Done (Greenish-Yellow Tint) */
+.alarm-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fffbeb; /* Light yellow */
+  border: 1px solid #fde68a;
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  color: #92400e;
+  font-weight: 500;
+}
+
+/* Status Variants */
 .task-container.done {
-  border-left-color: #1fff2a; /* FFEC1F */
-  background-color: rgba(179, 248, 159, 0.05);
+  border-left-color: #1fff2a;
+  background-color: rgba(31, 255, 42, 0.02);
 }
-
-/* Overdue (Coral/Red) */
 .task-container.overdue {
-  border-left-color: #ff785a; /* FF785A */
-  background-color: rgba(255, 120, 90, 0.05);
+  border-left-color: #ff785a;
+  background-color: rgba(255, 120, 90, 0.02);
 }
-
-.task-container.overdue .task-title h4 {
-  color: #ff785a;
-}
-
-/* Upcoming (Yellow/Orange) */
 .task-container.upcoming {
-  border-left-color: #ffd25a; /* FFD25A */
-  background-color: rgba(255, 210, 90, 0.05);
+  border-left-color: #ffd25a;
+  background-color: rgba(255, 210, 90, 0.02);
 }
 
-.no-tasks {
-  text-align: center;
-  color: #666;
-  padding: 40px;
-  font-style: italic;
+/* Mobile Support */
+@media (max-width: 768px) {
+  .task-header-row {
+    flex-direction: column;
+  }
+  .task-actions-side {
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 15px;
+  }
 }
+
+/* --- Custom Alarm Toast Styles --- */
+.custom-alarm-toast {
+  background: #ffd25a; /* Theme yellow */
+  color: #191919;
+  padding: 16px 24px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  border: 3px solid #191919;
+  min-width: 400px; /* Slightly wider to fit two buttons */
+  z-index: 9999;
+  font-family: "Outfit", sans-serif;
+}
+
+.toast-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.stop-alarm-btn {
+  background: #191919;
+  color: #ffd25a;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 900;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-family: "Outfit", sans-serif;
+}
+
+/* New Snooze Button Style */
+.snooze-alarm-btn {
+  background: rgba(0, 0, 0, 0.1);
+  color: #191919;
+  border: 2px solid #191919;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: "Outfit", sans-serif;
+}
+
+.snooze-alarm-btn:hover {
+  background: #191919;
+  color: #ffd25a;
+  transform: translateY(-2px);
+}
+
+.stop-alarm-btn:hover {
+  transform: scale(1.1);
+  background: #000;
+}
+
+/* ... rest of your existing content wrapper and bell animation code ... */
