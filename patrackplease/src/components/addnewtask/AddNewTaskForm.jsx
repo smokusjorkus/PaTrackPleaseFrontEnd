@@ -3,6 +3,7 @@ import "./AddNewTaskFormStyle.css";
 import Button from "../button/Button";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import ErrorMessage from "../errormessage/ErrorMessage";
 
 export default function AddNewTaskForm({ onClose, refreshTasks }) {
   const [taskName, setTaskName] = useState("");
@@ -10,6 +11,7 @@ export default function AddNewTaskForm({ onClose, refreshTasks }) {
   const [dueDate, setDueDate] = useState("");
   const [status, setStatus] = useState("Upcoming");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const nav = useNavigate();
 
@@ -18,19 +20,19 @@ export default function AddNewTaskForm({ onClose, refreshTasks }) {
       const user = JSON.parse(localStorage.getItem("user"));
 
       if (!user || !user.email) {
-        toast.error("User not found. Please log in again.");
+        setError("User not found. Please log in again.");
         return;
       }
 
       if (!taskName.trim() || !taskDescription.trim() || !dueDate || !status) {
-        toast.error("Please fill in all fields.");
+        setError("Please fill in all fields.");
         return;
       }
 
       const today = new Date().toISOString().split("T")[0];
 
       if (dueDate < today) {
-        toast.error("Due date cannot be in the past.");
+        setError("Due date cannot be in the past.");
         return;
       }
 
@@ -110,13 +112,17 @@ export default function AddNewTaskForm({ onClose, refreshTasks }) {
 
         <div>
           <label>Status</label>
-          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+          <select
+            className="select-form"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
             <option value="Done">Done</option>
             <option value="Upcoming">Upcoming</option>
-            <option value="Overdue">Overdue</option>
+            <option value="In Progress">In Progress</option>
           </select>
         </div>
-
+        {error && <ErrorMessage value={error} />}
         <div className="modal-actions">
           <Button
             onClick={onClose}

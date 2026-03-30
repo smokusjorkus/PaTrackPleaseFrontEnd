@@ -29,6 +29,13 @@
   font-family: "Outfit", sans-serif;
 }
 
+.select-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
 /* title */
 .modal-content h2 {
   font-size: 1.8rem;
