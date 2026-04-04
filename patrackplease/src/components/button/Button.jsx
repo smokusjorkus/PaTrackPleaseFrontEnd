@@ -8,13 +8,14 @@ export default function Button({
   children,
   className,
   fontWeight,
+  padding,
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const defaultColor = color || "#FFF05A";
 
   const buttonStyle = {
-    padding: "15px",
+    padding: padding ? padding : "15px",
     fontFamily: "Outfit",
     backgroundColor: isHovered ? "#e6d851" : defaultColor,
     transform: isHovered ? "scale(1.05)" : "scale(1)",

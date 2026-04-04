@@ -17,6 +17,154 @@
   margin: 0 auto;
 }
 
+.account-details {
+  display: flex;
+  background-color: #191919;
+  color: white;
+  padding: 32px 36px;
+  border: 1px solid #191919;
+  border-radius: 20px;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle yellow glow blob */
+.account-details::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  background: #ffd25a;
+  border-radius: 50%;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.profile-image {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.account-email-name {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Email — muted */
+.account-email-name p:first-child {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 400;
+}
+
+/* Name — bold headline */
+.account-email-name p:last-child {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #fff;
+}
+
+/* Vertical divider between avatar block and buttons */
+.account-divider {
+  width: 1px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.edit-profile-divider {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: white;
+  border-radius: 20px;
+  border: 1.5px solid #efefef;
+  overflow: hidden;
+  max-width: 620px;
+}
+
+.name-plate-wrapper,
+.email-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 28px;
+  border-bottom: 1px solid #f3f3f3;
+  transition: background 0.15s ease;
+}
+
+.name-plate-wrapper:last-child,
+.email-wrapper:last-child {
+  border-bottom: none;
+}
+
+.name-plate-wrapper:hover,
+.email-wrapper:hover {
+  background: #fffdf7;
+}
+
+.email-title {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin: 0;
+}
+
+label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.profile-input {
+  background: none;
+  border: none;
+  outline: none;
+  font-family: "Outfit", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #191919;
+  padding: 0;
+  width: 100%;
+}
+
+.account-email {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #191919;
+}
+
+.profile-actions-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.image-desc {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.25);
+}
+
 .tasks-headerbar {
   padding: 40px;
   max-width: 1200px;
@@ -24,6 +172,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.edit-profile-divider {
 }
 
 .tasks-headerbar p {

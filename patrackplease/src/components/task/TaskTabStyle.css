@@ -102,17 +102,67 @@
   gap: 8px;
 }
 
+/* Make pill the positioning anchor */
 .alarm-pill {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #fffbeb; /* Light yellow */
+  background: #fffbeb;
   border: 1px solid #fde68a;
   padding: 6px 12px;
   border-radius: 50px;
   font-size: 0.8rem;
   color: #92400e;
   font-weight: 500;
+  position: relative; /* ADD THIS */
+  cursor: default; /* ADD THIS */
+}
+
+/* Tooltip bubble */
+.alarm-pill::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  background: #191919;
+  color: #ffd25a;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 10px;
+  white-space: pre-line; /* allows \n line breaks */
+  width: max-content;
+  max-width: 220px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  z-index: 100;
+  line-height: 1.6;
+}
+
+/* Arrow pointer */
+.alarm-pill::before {
+  content: "";
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #191919;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 100;
+}
+
+/* Show on hover */
+.alarm-pill:hover::after,
+.alarm-pill:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
 }
 
 /* Status Variants */

@@ -7,9 +7,7 @@
 
 .profile-main {
   flex-grow: 1; /* Take up remaining space */
-  min-height: 100vh;
   transition: all 0.3s ease;
-  width: 100%;
 }
 
 /* Adjust margin based on Sidebar state */
@@ -54,10 +52,11 @@
 .name-plate-wrapper,
 .email-wrapper {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
   gap: 15px;
   width: 100%; /* Full width of container */
-  max-width: 500px; /* Limit input width */
+  border-radius: 8px;
 }
 
 .profile-input {
@@ -68,6 +67,18 @@
   font-size: 1.1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
+}
+
+.detail-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #191919;
+  margin-bottom: 8px;
+}
+
+.detail-detail {
+  font-size: 1rem;
+  color: #6b7280;
 }
 
 .account-email {

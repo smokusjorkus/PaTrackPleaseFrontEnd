@@ -116,6 +116,11 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
             <div className="profile-image">
               {/* Pass the dynamic image state to ImageHolder */}
               <ImageHolder src={image} />
+
+              <div className="account-email-name">
+                <p>{email}</p>
+                <p>{name}</p>
+              </div>
             </div>
 
             <div className="profile-actions-wrapper">
@@ -134,14 +139,13 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
             </div>
           </div>
 
-          <div className="name-plate-wrapper">
-            <label>Name</label>
-            <input
-              type="text"
-              value={name}
-              className="profile-input"
-              readOnly
-            />
+          <div className="email-wrapper">
+            <div>
+              <label className="detail-title" style={{ marginBottom: "20px" }}>
+                Name
+              </label>
+              <p className="detail-detail">{name}</p>
+            </div>
             <Button
               value="Change Username"
               onClick={() => openEditModal("Username")}
@@ -150,8 +154,10 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
           </div>
 
           <div className="email-wrapper">
-            <h1 className="email-title">Email</h1>
-            <p className="account-email">{email}</p>
+            <div>
+              <h1 className="detail-title">Email</h1>
+              <p className="detail-detail">{email}</p>
+            </div>
             <Button
               value="Change Email"
               fontsize="1.0rem"
@@ -160,7 +166,15 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
           </div>
 
           <div className="email-wrapper">
-            <h1 className="email-title">Password</h1>
+            <div>
+              <h1 className="detail-title">Password</h1>
+              <p
+                className="detail-detail"
+                style={{ letterSpacing: "4px", color: "#6b7280" }}
+              >
+                ••••••••••
+              </p>
+            </div>
             <Button
               value="Change Password"
               fontsize="1.0rem"

@@ -150,6 +150,21 @@ export default function TaskTab({
     }
   };
 
+  const handleDeleteAlarm = async (alarmId) => {
+    if (!window.confirm("Delete this alarm?")) return;
+    try {
+      const res = await fetch(`http://localhost:8080/api/alarms/${alarmId}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        toast.success("Alarm deleted.");
+        await refreshAllAlarms();
+      }
+    } catch (error) {
+      toast.error("Failed to delete alarm.");
+    }
+  };
+
   const handleOpenAlarmModal = async (task) => {
     if (!task?.id) return;
     const taskAlarmData = await refreshTaskAlarms(task.id);
@@ -217,9 +232,28 @@ export default function TaskTab({
                   <p className="alarm-label">Active Alarms:</p>
                   <div className="alarm-pills-container">
                     {taskAlarms.map((alarm) => (
-                      <div key={alarm.id} className="alarm-pill">
+                      <div
+                        key={alarm.id}
+                        className="alarm-pill"
+                        data-tooltip={`${alarm.alarmName}\n${
+                          alarm.alarmStart
+                            ? new Date(
+                                alarm.alarmStart.replace("Z", ""),
+                              ).toLocaleString()
+                            : "No time set"
+                        }`}
+                      >
                         <Bell size={12} color="#ffd25a" />
                         <span>{alarm.alarmName}</span>
+                        <Button
+                          style={{ marginLeft: "20px" }}
+                          value="Delete"
+                          onClick={() => handleDeleteAlarm(alarm.id)}
+                          color="transparent"
+                          fontsize="0.7rem"
+                          fontWeight="500"
+                          padding="5px"
+                        ></Button>
                       </div>
                     ))}
                   </div>
