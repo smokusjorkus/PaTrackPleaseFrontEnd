@@ -83,9 +83,13 @@ export default function TasksPage({ isOpen, setIsOpen }) {
     };
   };
 
-  const firstTaskMonth = tasks[0]?.dueDate
-    ? getDateParts(tasks[0].dueDate).month
-    : "";
+  // Group tasks by month
+  const groupedTasks = tasks.reduce((groups, task) => {
+    const month = task.dueDate ? getDateParts(task.dueDate).month : "No Date";
+    if (!groups[month]) groups[month] = [];
+    groups[month].push(task);
+    return groups;
+  }, {});
 
   // Load data on mount
   useEffect(() => {
@@ -167,31 +171,33 @@ export default function TasksPage({ isOpen, setIsOpen }) {
         )}
 
         <div className="tasks-content">
-          {!loading && firstTaskMonth && (
-            <h3
-              className="Date-On-Sets"
-              style={{
-                marginBottom: "20px",
-                borderBottom: "2px solid #191919",
-                fontSize: "2rem",
-                padding: "10px 10px",
-                textAlign: "left",
-              }}
-            >
-              {firstTaskMonth}
-            </h3>
-          )}
           {loading ? (
             <p>Loading your dashboard...</p>
           ) : (
-            <TaskTab
-              tasks={tasks}
-              alarms={alarms}
-              refreshTasks={fetchUserTasks}
-              refreshAllAlarms={fetchUserAlarms}
-              refreshTaskAlarms={fetchTaskAlarms}
-              onAlarmTrigger={handleAlarmTrigger}
-            />
+            Object.entries(groupedTasks).map(([month, monthTasks]) => (
+              <div key={month}>
+                <h3
+                  className="Date-On-Sets"
+                  style={{
+                    marginBottom: "20px",
+                    borderBottom: "2px solid #191919",
+                    fontSize: "2rem",
+                    padding: "10px 10px",
+                    textAlign: "left",
+                  }}
+                >
+                  {month}
+                </h3>
+                <TaskTab
+                  tasks={monthTasks}
+                  alarms={alarms}
+                  refreshTasks={fetchUserTasks}
+                  refreshAllAlarms={fetchUserAlarms}
+                  refreshTaskAlarms={fetchTaskAlarms}
+                  onAlarmTrigger={handleAlarmTrigger}
+                />
+              </div>
+            ))
           )}
         </div>
       </main>

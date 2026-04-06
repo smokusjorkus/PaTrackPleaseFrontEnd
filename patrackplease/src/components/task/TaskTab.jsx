@@ -174,7 +174,7 @@ export default function TaskTab({
 
   const getStatusClass = (status) => {
     if (!status) return "upcoming";
-    return status.toLowerCase().trim().replace(/\s+/g, "");
+    return status.toLowerCase().trim().replace(/\s+/g, "-"); // "in-progress" ✅
   };
 
   return (

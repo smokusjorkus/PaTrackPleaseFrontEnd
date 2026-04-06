@@ -119,7 +119,7 @@ export default function AddNewTaskForm({ onClose, refreshTasks }) {
           >
             <option value="Done">Done</option>
             <option value="Upcoming">Upcoming</option>
-            <option value="In Progress">In Progress</option>
+            <option value="In Progress">In-Progress</option>
           </select>
         </div>
         {error && <ErrorMessage value={error} />}

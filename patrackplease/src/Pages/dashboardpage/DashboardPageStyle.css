@@ -24,8 +24,81 @@
   margin: 0 auto;
 }
 
+.task-pending-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  text-align: center;
+  padding: 10px;
+}
+
 .dashboard-header h1 {
   font-size: 3rem;
   color: #191919;
   margin-bottom: 10px;
+}
+
+.Kpi-row {
+  display: flex;
+  gap: 56px;
+  margin-top: 30px;
+}
+
+.tasks-pending-container {
+  margin-top: 40px;
+  width: 100%;
+  background-color: #ffdfc2;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.pending-task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pending-task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background-color: #fffdfa;
+  border-radius: 10px;
+  border-left: 5px solid #ffec1f;
+}
+
+.pending-task-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #191919;
+}
+
+.pending-task-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.pending-task-status {
+  background: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.no-pending {
+  text-align: center;
+  color: #9ca3af;
+  padding: 20px 0;
 }

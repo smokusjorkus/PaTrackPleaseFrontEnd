@@ -179,6 +179,11 @@
   background-color: rgba(255, 210, 90, 0.02);
 }
 
+.task-container.in-progress {
+  border-left-color: #ffec1f;
+  background-color: rgba(255, 210, 90, 0.02);
+}
+
 /* Mobile Support */
 @media (max-width: 768px) {
   .task-header-row {
