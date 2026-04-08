@@ -56,10 +56,18 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
     getTasks();
   }, []);
 
-  const completedTasks = tasks.filter((t) => t.status === "Done").length;
-  const overdueTasks = tasks.filter((t) => t.status === "Overdue").length;
+  const normalize = (s) => s?.toLowerCase().replace(/[\s_]/g, "");
+
+  const completedTasks = tasks.filter(
+    (t) => normalize(t.status) === "done",
+  ).length;
+  const overdueTasks = tasks.filter(
+    (t) => normalize(t.status) === "overdue",
+  ).length;
   const pendingTasks = tasks.filter(
-    (t) => t.status === "In Progress" || t.status === "Upcoming",
+    (t) =>
+      normalize(t.status) === "inprogress" ||
+      normalize(t.status) === "upcoming",
   ).length;
   const totalTasks = tasks.length;
 
@@ -117,7 +125,9 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
             <ul className="pending-task-list">
               {tasks
                 .filter(
-                  (t) => t.status === "In Progress" || t.status === "Upcoming",
+                  (t) =>
+                    normalize(t.status) === "inprogress" ||
+                    normalize(t.status) === "upcoming",
                 )
                 .map((task) => (
                   <li key={task.id} className="pending-task-item">
@@ -131,7 +141,9 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
                   </li>
                 ))}
               {tasks.filter(
-                (t) => t.status === "In Progress" || t.status === "Upcoming",
+                (t) =>
+                  normalize(t.status) === "inprogress" ||
+                  normalize(t.status) === "upcoming",
               ).length === 0 && (
                 <p className="no-pending">🎉 No pending tasks!</p>
               )}

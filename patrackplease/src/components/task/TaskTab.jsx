@@ -5,7 +5,7 @@ import Button from "../button/Button";
 import { toast } from "react-hot-toast";
 import { Bell, Calendar } from "lucide-react";
 import SetAlarmTab from "../setalarmtab/SetAlarmTab";
-import Icantgettoyou from "../../assets/Icantgettoyou.wav";
+import EditTaskTab from "../edittask/EditTaskTab";
 
 export default function TaskTab({
   tasks,
@@ -16,105 +16,8 @@ export default function TaskTab({
 }) {
   const [selectedTask, setSelectedTask] = useState(null);
   const [selectedTaskAlarms, setSelectedTaskAlarms] = useState([]);
-
-  // Refs for logic management
-  const triggeredAlarms = useRef(new Set());
-  const activeAudio = useRef(null);
-
-  // 1. Function to stop the alarm sound safely
-  const stopAlarm = () => {
-    if (activeAudio.current) {
-      activeAudio.current.pause();
-      activeAudio.current.currentTime = 0;
-      activeAudio.current = null;
-      toast.dismiss(); // Clears the custom "Dismiss" toast
-    }
-  };
-
-  // 2. Audio Unlocker (Required by Browser Policy)
-  useEffect(() => {
-    const unlock = () => {
-      const silent = new Audio(Icantgettoyou);
-      silent.volume = 0;
-      silent.play().catch(() => {});
-      window.removeEventListener("click", unlock);
-    };
-    window.addEventListener("click", unlock);
-    return () => window.removeEventListener("click", unlock);
-  }, []);
-
-  // 3. The Refined Alarm Scheduler
-  useEffect(() => {
-    if (!alarms || alarms.length === 0) return;
-
-    const interval = setInterval(() => {
-      const now = new Date();
-
-      alarms.forEach((alarm) => {
-        if (!alarm.alarmStart) return;
-        if (triggeredAlarms.current.has(alarm.id)) return;
-
-        // Parse to Local Time
-        const alarmTime = new Date(alarm.alarmStart.replace("Z", ""));
-        const diffMs = now - alarmTime;
-
-        /**
-         * SAFETY TRIGGER CONDITION:
-         * 1. diffMs >= 0: The time has arrived or passed.
-         * 2. diffMs < 60000: It happened within the last 60 seconds.
-         * (This prevents 30+ old alarms from firing at once on refresh!)
-         */
-        if (diffMs >= 0 && diffMs < 60000) {
-          console.log(`🚀 TRIGGERING: ${alarm.alarmName}`);
-          triggeredAlarms.current.add(alarm.id);
-
-          // Only start a new audio instance if one isn't already playing
-          if (!activeAudio.current) {
-            const alarmSound = new Audio(Icantgettoyou);
-            alarmSound.loop = true;
-            activeAudio.current = alarmSound;
-            alarmSound.play().catch((err) => {
-              console.warn("Audio blocked. Click the page!", err);
-            });
-          }
-
-          // Custom Toast with Dismiss Button
-          toast.custom(
-            (t) => (
-              <div
-                className={`animate__animated ${t.visible ? "animate__fadeInDown" : "animate__fadeOutUp"} custom-alarm-toast`}
-              >
-                <div className="toast-content-wrapper">
-                  <Bell size={24} className="ringing-bell" />
-                  <div className="toast-text">
-                    <p className="toast-name">
-                      {alarm.alarmName || "Task Reminder"}
-                    </p>
-                    <p className="toast-sub">Time to get to work!</p>
-                  </div>
-                </div>
-                <button
-                  className="stop-alarm-btn"
-                  onClick={() => {
-                    stopAlarm();
-                    toast.dismiss(t.id);
-                  }}
-                >
-                  DISMISS
-                </button>
-              </div>
-            ),
-            { duration: Infinity },
-          );
-        }
-      });
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-      stopAlarm();
-    };
-  }, [alarms]);
+  const [showEditingTask, setShowEditingTask] = useState(null);
+  const [showAlarmTab, setShowAlarmTab] = useState(false);
 
   // --- CRUD Handlers ---
   const handleMarkAsDone = async (id) => {
@@ -134,42 +37,53 @@ export default function TaskTab({
     }
   };
 
-    const handleDelete = async (id) => {
-      if (!window.confirm("Delete this task?")) return;
-      try {
-        const res = await fetch(`http://localhost:8080/api/tasks/${id}`, {
-          method: "DELETE",
-        });
-        if (res.ok) {
-          await refreshTasks();
-          await refreshAllAlarms();
-          toast.success("Task deleted.");
-        }
-      } catch (error) {
-        toast.error("Delete failed.");
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this task?")) return;
+    try {
+      const res = await fetch(`http://localhost:8080/api/tasks/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        await refreshTasks();
+        await refreshAllAlarms();
+        toast.success("Task deleted.");
       }
-    };
+    } catch (error) {
+      toast.error("Delete failed.");
+    }
+  };
 
-    const handleDeleteAlarm = async (alarmId) => {
-      if (!window.confirm("Delete this alarm?")) return;
-      try {
-        const res = await fetch(`http://localhost:8080/api/alarms/${alarmId}`, {
-          method: "DELETE",
-        });
-        if (res.ok) {
-          toast.success("Alarm deleted.");
-          await refreshAllAlarms();
-        }
-      } catch (error) {
-        toast.error("Failed to delete alarm.");
+  const handleDeleteAlarm = async (alarmId) => {
+    if (!window.confirm("Delete this alarm?")) return;
+    try {
+      const res = await fetch(`http://localhost:8080/api/alarms/${alarmId}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        toast.success("Alarm deleted.");
+        await refreshAllAlarms();
       }
-    };
+    } catch (error) {
+      toast.error("Failed to delete alarm.");
+    }
+  };
 
   const handleOpenAlarmModal = async (task) => {
     if (!task?.id) return;
     const taskAlarmData = await refreshTaskAlarms(task.id);
     setSelectedTask(task);
     setSelectedTaskAlarms(taskAlarmData || []);
+    setShowAlarmTab(true);
+  };
+
+  const handleOpenEditModal = (task) => {
+    if (!task?.id) return;
+    setSelectedTask(null); // ← clear first to force re-render
+    setShowEditingTask(false); // ← reset before reopening
+    setTimeout(() => {
+      setSelectedTask(task);
+      setShowEditingTask(true);
+    }, 0);
   };
 
   const getStatusClass = (status) => {
@@ -210,7 +124,11 @@ export default function TaskTab({
                   >
                     <Bell size={16} /> Alarm
                   </Button>
-                  <Button value="Edit" fontsize="0.9rem" />
+                  <Button
+                    value="Edit"
+                    fontsize="0.9rem"
+                    onClick={() => handleOpenEditModal(task)}
+                  />
                   <Button
                     value="Delete"
                     color="#ff785a"
@@ -227,6 +145,7 @@ export default function TaskTab({
                   )}
                 </div>
               </div>
+
               {taskAlarms.length > 0 && (
                 <div className="task-alarms-footer">
                   <p className="alarm-label">Active Alarms:</p>
@@ -268,16 +187,28 @@ export default function TaskTab({
         </div>
       )}
 
-      {selectedTask && (
+      {showAlarmTab && selectedTask && (
         <SetAlarmTab
           task={selectedTask}
           alarms={selectedTaskAlarms}
           onClose={() => {
+            setShowAlarmTab(false);
             setSelectedTask(null);
             setSelectedTaskAlarms([]);
           }}
           refreshTasks={refreshTasks}
           refreshAllAlarms={refreshAllAlarms}
+        />
+      )}
+
+      {showEditingTask && selectedTask && (
+        <EditTaskTab
+          task={selectedTask}
+          onClose={() => {
+            setShowEditingTask(false);
+            setSelectedTask(null); // ← add this
+          }}
+          refreshTasks={refreshTasks}
         />
       )}
     </div>

@@ -1,0 +1,104 @@
+/* Overlay */
+.modal_overlay_editTask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+/* Modal container */
+.editTask_modal {
+  width: 420px;
+  max-width: 90%;
+  background: #fffdfa;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  font-family: "Outfit", sans-serif;
+  animation: fadeInUp 0.3s ease;
+}
+
+/* Header */
+.editTask_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.editTask_header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #191919;
+}
+
+.close_btn_editTask {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #191919;
+  transition: transform 0.2s ease;
+}
+
+.close_btn_editTask:hover {
+  transform: scale(1.1);
+}
+
+/* Form */
+.editTask_form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form_group_editTask {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form_group_editTask label {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  color: #191919;
+}
+
+.form_group_editTask input,
+.form_group_editTask textarea,
+.form_group_editTask select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: "Outfit", sans-serif;
+  outline: none;
+  transition: 0.2s;
+  background-color: white;
+  box-sizing: border-box;
+}
+
+.form_group_editTask input:focus,
+.form_group_editTask textarea:focus,
+.form_group_editTask select:focus {
+  border-color: #fff05a;
+  box-shadow: 0 0 0 2px rgba(255, 240, 90, 0.4);
+}
+
+.form_group_editTask textarea {
+  resize: none;
+}
+
+/* Footer */
+.editTask_buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

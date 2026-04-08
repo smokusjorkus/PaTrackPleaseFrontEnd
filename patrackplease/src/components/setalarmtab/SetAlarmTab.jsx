@@ -4,6 +4,7 @@ import Button from "../button/Button";
 import { useState } from "react";
 import ErrorMessage from "../errormessage/ErrorMessage";
 import toast from "react-hot-toast";
+import "animate.css";
 
 export default function SetAlarmTab({
   task,
@@ -79,7 +80,7 @@ export default function SetAlarmTab({
   };
 
   return (
-    <div className="modal_overlay_setAlarm">
+    <div className="modal_overlay_setAlarm animate__animated animate__fadeInUp">
       <div className="modal_container_setAlarm">
         {/* Header */}
         <div className="modal_header">
