@@ -60,81 +60,85 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
   return (
     <div className={`Sidebar-container ${isOpen ? "open" : "closed"}`}>
-      <div className="sidebar-profile-container">
-        <div className="account">
-          {/* Conditional Rendering: Show image if it exists, otherwise show Icon */}
-          {image ? (
-            <img src={image} alt="Profile" className="profile-img-sidebar" />
-          ) : (
-            <User size={30} />
-          )}
+      {/* TOP SECTION */}
+      <div>
+        <div className="sidebar-profile-container">
+          <div className="account">
+            {image ? (
+              <img src={image} alt="Profile" className="profile-img-sidebar" />
+            ) : (
+              <User size={30} />
+            )}
 
-          {isOpen && (
-            <p className="animate__animated animate__fadeIn">
-              {userName || "User"}
-            </p>
-          )}
+            {isOpen && (
+              <p className="animate__animated animate__fadeIn">
+                {userName || "User"}
+              </p>
+            )}
+          </div>
+
+          <Menu
+            onClick={() => setIsOpen(!isOpen)}
+            style={{ cursor: "pointer" }}
+            className="menu-icon"
+          />
         </div>
-        <Menu
-          onClick={() => setIsOpen(!isOpen)}
-          style={{ cursor: "pointer" }}
-          className="menu-icon"
-        />
+
+        <nav className="navigation-links">
+          <div className="sidebar-btn" onClick={() => setShowForm(true)}>
+            <CirclePlus />
+            {isOpen && <p>Add New Task</p>}
+          </div>
+
+          {showForm && <AddNewTaskForm onClose={() => setShowForm(false)} />}
+
+          <Link
+            to="/dashboard"
+            style={{ textDecoration: "none" }}
+            className={`sidebar-link ${
+              location.pathname === "/dashboard" ? "active" : ""
+            }`}
+          >
+            <div className="sidebar-btn">
+              <LayoutDashboard />
+              {isOpen && <p>Dashboard</p>}
+            </div>
+          </Link>
+
+          <Link
+            to="/YourTasks"
+            style={{ textDecoration: "none" }}
+            className={`sidebar-link ${
+              location.pathname === "/YourTasks" ? "active" : ""
+            }`}
+          >
+            <div className="sidebar-btn">
+              <SquareCheck />
+              {isOpen && <p>Your Tasks</p>}
+            </div>
+          </Link>
+
+          <Link
+            to="/profile"
+            style={{ textDecoration: "none" }}
+            className={`sidebar-link ${
+              location.pathname === "/profile" ? "active" : ""
+            }`}
+          >
+            <div className="sidebar-btn">
+              <CircleUserRound />
+              {isOpen && <p>Profile</p>}
+            </div>
+          </Link>
+
+          <div className="sidebar-btn logout-btn" onClick={handlelogout}>
+            <LogOut />
+            {isOpen && <p>Log out</p>}
+          </div>
+        </nav>
       </div>
 
-      <nav className="navigation-links">
-        <div className="sidebar-btn" onClick={() => setShowForm(true)}>
-          <CirclePlus />
-          {isOpen && <p>Add New Task</p>}
-        </div>
-
-        {showForm && <AddNewTaskForm onClose={() => setShowForm(false)} />}
-
-        <Link
-          to="/dashboard"
-          style={{ textDecoration: "none" }}
-          className={`sidebar-link ${location.pathname === "/dashboard" ? "active" : ""}`}
-        >
-          <div className="sidebar-btn">
-            <LayoutDashboard color="#000000" />
-            {isOpen && <p>Dashboard</p>}
-          </div>
-        </Link>
-
-        <Link
-          to="/YourTasks"
-          style={{ textDecoration: "none" }}
-          className={`sidebar-link ${location.pathname === "/YourTasks" ? "active" : ""}`}
-        >
-          <div className="sidebar-btn">
-            <SquareCheck />
-            {isOpen && <p>Your Tasks</p>}
-          </div>
-        </Link>
-
-        <Link to="#" style={{ textDecoration: "none" }}>
-          <div className="sidebar-btn">
-            <Search />
-            {isOpen && <p>Search Tasks</p>}
-          </div>
-        </Link>
-
-        <Link
-          to="/profile"
-          style={{ textDecoration: "none" }}
-          className={`sidebar-link ${location.pathname === "/profile" ? "active" : ""}`}
-        >
-          <div className="sidebar-btn">
-            <CircleUserRound color="#000000" />
-            {isOpen && <p>Profile</p>}
-          </div>
-        </Link>
-
-        <div className="sidebar-btn logout-btn" onClick={handlelogout}>
-          <LogOut />
-          {isOpen && <p>Log out</p>}
-        </div>
-      </nav>
+      {/* FOOTER */}
     </div>
   );
 }

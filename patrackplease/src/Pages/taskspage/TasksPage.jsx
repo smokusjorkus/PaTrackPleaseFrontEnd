@@ -7,6 +7,7 @@ import TaskTab from "../../components/task/TaskTab";
 import Button from "../../components/button/Button";
 import AddNewTaskForm from "../../components/addnewtask/AddNewTaskForm";
 import Icantgettoyou from "../../assets/Icantgettoyou.wav";
+import Select from "react-select";
 
 export default function TasksPage({ isOpen, setIsOpen }) {
   const [tasks, setTasks] = useState([]);
@@ -15,16 +16,19 @@ export default function TasksPage({ isOpen, setIsOpen }) {
   const [showForm, setShowForm] = useState(false);
   const [audioUnlocked, setAudioUnlocked] = useState(false);
   const triggeredAlarms = useRef(new Set());
+  const [selectedTaskOption, setSelectedTaskOption] = useState(null);
 
   const handleAlarmTrigger = (alarmData) => {
     if (!alarmData) return;
+
     try {
       const alarmSound = new Audio(Icantgettoyou);
-      alarmSound.play().catch((err) => {
+      alarmSound.play().catch(() => {
         console.warn(
           "Audio playback blocked: User must interact with the page first.",
         );
       });
+
       toast(alarmData.alarmName || "Task Reminder", {
         icon: "⏰",
         duration: 5000,
@@ -39,10 +43,17 @@ export default function TasksPage({ isOpen, setIsOpen }) {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user?.email) return;
+
       const res = await fetch(
         `http://localhost:8080/api/tasks?email=${encodeURIComponent(user.email)}`,
       );
-      if (res.ok) setTasks(await res.json());
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
+
+      const data = await res.json();
+      setTasks(data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -52,10 +63,17 @@ export default function TasksPage({ isOpen, setIsOpen }) {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user?.email) return;
+
       const res = await fetch(
         `http://localhost:8080/api/alarms?email=${encodeURIComponent(user.email)}`,
       );
-      if (res.ok) setAlarms(await res.json());
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch alarms");
+      }
+
+      const data = await res.json();
+      setAlarms(data);
     } catch (error) {
       console.error("Error fetching alarms:", error);
     }
@@ -64,18 +82,25 @@ export default function TasksPage({ isOpen, setIsOpen }) {
   const fetchTaskAlarms = async (taskId) => {
     try {
       if (!taskId) return [];
+
       const res = await fetch(
         `http://localhost:8080/api/alarms/task/${taskId}`,
       );
-      if (res.ok) return await res.json();
-      return [];
+
+      if (!res.ok) {
+        return [];
+      }
+
+      return await res.json();
     } catch (error) {
+      console.error("Error fetching task alarms:", error);
       return [];
     }
   };
 
   const getDateParts = (dateString) => {
     const date = new Date(dateString);
+
     return {
       day: date.getDate(),
       month: date.toLocaleString("en-US", { month: "long" }),
@@ -83,25 +108,35 @@ export default function TasksPage({ isOpen, setIsOpen }) {
     };
   };
 
-  // Group tasks by month
-  const groupedTasks = tasks.reduce((groups, task) => {
+  const taskOptions = tasks.map((task) => ({
+    value: task.id,
+    label: task.taskName || "Untitled Task",
+    description: task.taskDescription || "",
+  }));
+
+  const filteredTasks = selectedTaskOption
+    ? tasks.filter((task) => task.id === selectedTaskOption.value)
+    : tasks;
+
+  const groupedTasks = filteredTasks.reduce((groups, task) => {
     const month = task.dueDate ? getDateParts(task.dueDate).month : "No Date";
+
     if (!groups[month]) groups[month] = [];
     groups[month].push(task);
+
     return groups;
   }, {});
 
-  // Load data on mount
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       await Promise.all([fetchUserTasks(), fetchUserAlarms()]);
       setLoading(false);
     };
+
     loadData();
   }, []);
 
-  // Unlock audio on first click
   useEffect(() => {
     const unlock = () => {
       const silent = new Audio(Icantgettoyou);
@@ -110,16 +145,18 @@ export default function TasksPage({ isOpen, setIsOpen }) {
       setAudioUnlocked(true);
       window.removeEventListener("click", unlock);
     };
+
     window.addEventListener("click", unlock);
+
     return () => window.removeEventListener("click", unlock);
   }, []);
 
-  // Alarm checker
   useEffect(() => {
     if (alarms.length === 0) return;
 
     const interval = setInterval(() => {
       const now = new Date();
+
       alarms.forEach((alarm) => {
         if (!alarm.alarmStart || !alarm.active) return;
         if (triggeredAlarms.current.has(alarm.id)) return;
@@ -158,9 +195,40 @@ export default function TasksPage({ isOpen, setIsOpen }) {
         <div className="tasks-headerbar animate__animated animate__fadeIn">
           <div className="headerbar-left">
             <h1 style={{ fontSize: "3rem" }}>Your Tasks</h1>
-            <p>{tasks.length} tasks assigned to you</p>
+            <p>{filteredTasks.length} tasks assigned to you</p>
           </div>
           <Button value="Add New Task" onClick={() => setShowForm(true)} />
+        </div>
+
+        <div className="tasks-searchbar animate__animated animate__fadeIn">
+          <Select
+            options={taskOptions}
+            value={selectedTaskOption}
+            onChange={setSelectedTaskOption}
+            isClearable
+            placeholder="Search or select a task..."
+            menuPortalTarget={document.body}
+            menuPosition="fixed"
+            styles={{
+              menuPortal: (base) => ({
+                ...base,
+                zIndex: 99999,
+                fontFamily: "Outfit",
+              }),
+              menu: (base) => ({
+                ...base,
+                zIndex: 99999,
+                fontFamily: "Outfit",
+              }),
+            }}
+            filterOption={(option, inputValue) => {
+              const search = inputValue.toLowerCase();
+              return (
+                option.label.toLowerCase().includes(search) ||
+                option.data.description.toLowerCase().includes(search)
+              );
+            }}
+          />
         </div>
 
         {showForm && (
@@ -173,6 +241,8 @@ export default function TasksPage({ isOpen, setIsOpen }) {
         <div className="tasks-content">
           {loading ? (
             <p>Loading your dashboard...</p>
+          ) : Object.keys(groupedTasks).length === 0 ? (
+            <p>No tasks found.</p>
           ) : (
             Object.entries(groupedTasks).map(([month, monthTasks]) => (
               <div key={month}>
@@ -188,6 +258,7 @@ export default function TasksPage({ isOpen, setIsOpen }) {
                 >
                   {month}
                 </h3>
+
                 <TaskTab
                   tasks={monthTasks}
                   alarms={alarms}

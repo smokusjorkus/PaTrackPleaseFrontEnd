@@ -1,6 +1,7 @@
+/* ── Dashboard layout ───────────────────── */
 .dashboard-page {
   min-height: 100vh;
-  background-color: #fffdfa; /* Warm tint */
+  background-color: #fffdfa;
   font-family: "Outfit", sans-serif;
   color: #191919;
   display: flex;
@@ -8,6 +9,7 @@
 
 .dashboard-main {
   flex-grow: 1;
+  min-width: 0; /* prevent flex blowout */
   transition: margin-left 0.3s ease;
 }
 
@@ -24,28 +26,22 @@
   margin: 0 auto;
 }
 
-.task-pending-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-sizing: border-box;
-  margin-bottom: 16px;
-  text-align: center;
-  padding: 10px;
-}
-
+/* ── Header ─────────────────────────────── */
 .dashboard-header h1 {
-  font-size: 3rem;
+  font-size: clamp(1.75rem, 5vw, 3rem); /* fluid, never tiny */
   color: #191919;
   margin-bottom: 10px;
 }
 
+/* ── KPI row ────────────────────────────── */
 .Kpi-row {
-  display: flex;
-  gap: 56px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
   margin-top: 30px;
 }
 
+/* ── Pending section ────────────────────── */
 .tasks-pending-container {
   margin-top: 40px;
   width: 100%;
@@ -53,6 +49,17 @@
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+
+.task-pending-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .pending-task-list {
@@ -72,12 +79,17 @@
   background-color: #fffdfa;
   border-radius: 10px;
   border-left: 5px solid #ffec1f;
+  gap: 12px;
+  flex-wrap: wrap; /* stack on very small screens */
 }
 
 .pending-task-name {
   font-weight: 600;
   font-size: 1rem;
   color: #191919;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
 }
 
 .pending-task-meta {
@@ -86,6 +98,7 @@
   align-items: center;
   font-size: 0.85rem;
   color: #6b7280;
+  flex-shrink: 0;
 }
 
 .pending-task-status {
@@ -95,10 +108,48 @@
   font-weight: 700;
   font-size: 0.75rem;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .no-pending {
   text-align: center;
   color: #9ca3af;
   padding: 20px 0;
+}
+
+/* ── Tablet (≤900px) ────────────────────── */
+@media (max-width: 900px) {
+  .dashboard-main.open,
+  .dashboard-main.closed {
+    margin-left: 0;
+  }
+
+  .dashboard-content {
+    padding: 24px 20px;
+  }
+
+  .Kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Mobile (≤540px) ────────────────────── */
+@media (max-width: 540px) {
+  .dashboard-content {
+    padding: 16px;
+  }
+
+  .Kpi-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .pending-task-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pending-task-meta {
+    flex-wrap: wrap;
+  }
 }

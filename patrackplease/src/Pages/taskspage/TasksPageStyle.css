@@ -174,7 +174,11 @@ label {
   align-items: center;
 }
 
-.edit-profile-divider {
+.tasks-searchbar {
+  padding: 0 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  z-index: 9999;
 }
 
 .tasks-headerbar p {

@@ -134,36 +134,36 @@ export default function TaskTab({
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this task?")) return;
-    try {
-      const res = await fetch(`http://localhost:8080/api/tasks/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        await refreshTasks();
-        await refreshAllAlarms();
-        toast.success("Task deleted.");
+    const handleDelete = async (id) => {
+      if (!window.confirm("Delete this task?")) return;
+      try {
+        const res = await fetch(`http://localhost:8080/api/tasks/${id}`, {
+          method: "DELETE",
+        });
+        if (res.ok) {
+          await refreshTasks();
+          await refreshAllAlarms();
+          toast.success("Task deleted.");
+        }
+      } catch (error) {
+        toast.error("Delete failed.");
       }
-    } catch (error) {
-      toast.error("Delete failed.");
-    }
-  };
+    };
 
-  const handleDeleteAlarm = async (alarmId) => {
-    if (!window.confirm("Delete this alarm?")) return;
-    try {
-      const res = await fetch(`http://localhost:8080/api/alarms/${alarmId}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        toast.success("Alarm deleted.");
-        await refreshAllAlarms();
+    const handleDeleteAlarm = async (alarmId) => {
+      if (!window.confirm("Delete this alarm?")) return;
+      try {
+        const res = await fetch(`http://localhost:8080/api/alarms/${alarmId}`, {
+          method: "DELETE",
+        });
+        if (res.ok) {
+          toast.success("Alarm deleted.");
+          await refreshAllAlarms();
+        }
+      } catch (error) {
+        toast.error("Failed to delete alarm.");
       }
-    } catch (error) {
-      toast.error("Failed to delete alarm.");
-    }
-  };
+    };
 
   const handleOpenAlarmModal = async (task) => {
     if (!task?.id) return;
