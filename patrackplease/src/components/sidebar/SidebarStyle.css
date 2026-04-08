@@ -19,6 +19,7 @@
   top: 0;
   left: 0;
   font-family: "Outfit", sans-serif;
+  justify-content: space-between;
 }
 
 .Sidebar-container.open {
