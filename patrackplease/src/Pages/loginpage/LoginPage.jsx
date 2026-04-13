@@ -57,7 +57,7 @@ export default function LoginPage() {
         // ← save HERE before navigating
         localStorage.setItem("user", JSON.stringify(data));
         localStorage.setItem("token", data.token);
-        console.log("Saved token:", localStorage.getItem("token")); // verify
+
         nav("/dashboard");
         return `Welcome back, ${data.username || "User"}!`;
       },
