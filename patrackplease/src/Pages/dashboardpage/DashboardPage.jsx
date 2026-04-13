@@ -56,7 +56,7 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
 
       if (res.ok) {
         const data = await res.json();
-        console.log("Tasks:", data);
+
         setTasks(data);
       } else if (res.status === 403) {
         console.error("Access Forbidden: Check if token is valid");
