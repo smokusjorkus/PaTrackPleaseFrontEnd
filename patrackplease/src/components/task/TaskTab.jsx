@@ -24,9 +24,15 @@ export default function TaskTab({
     const confirmDone = window.confirm("Are you done with this task?");
     if (!confirmDone) return;
     try {
+      const token = localStorage.getItem("token"); // ← add
       const res = await fetch(
         `http://localhost:8080/api/tasks/${id}/status?status=DONE`,
-        { method: "PUT" },
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`, // ← add
+          },
+        },
       );
       if (res.ok) {
         toast.success("Task marked as done ✅");
@@ -40,8 +46,12 @@ export default function TaskTab({
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this task?")) return;
     try {
+      const token = localStorage.getItem("token"); // ← add
       const res = await fetch(`http://localhost:8080/api/tasks/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // ← add
+        },
       });
       if (res.ok) {
         await refreshTasks();
@@ -56,8 +66,12 @@ export default function TaskTab({
   const handleDeleteAlarm = async (alarmId) => {
     if (!window.confirm("Delete this alarm?")) return;
     try {
+      const token = localStorage.getItem("token"); // ← add
       const res = await fetch(`http://localhost:8080/api/alarms/${alarmId}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // ← add
+        },
       });
       if (res.ok) {
         toast.success("Alarm deleted.");

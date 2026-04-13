@@ -48,15 +48,16 @@ export default function LoginPage() {
       if (!res.ok) {
         throw new Error(data.message || "Login failed!");
       }
-      // Save user data
-      localStorage.setItem("user", JSON.stringify(data));
-      return data;
+      return data; // ← just return, don't save here
     });
 
-    // This handles the whole UI cycle
     toast.promise(loginPromise, {
       loading: "Authenticating...",
       success: (data) => {
+        // ← save HERE before navigating
+        localStorage.setItem("user", JSON.stringify(data));
+        localStorage.setItem("token", data.token);
+        console.log("Saved token:", localStorage.getItem("token")); // verify
         nav("/dashboard");
         return `Welcome back, ${data.username || "User"}!`;
       },

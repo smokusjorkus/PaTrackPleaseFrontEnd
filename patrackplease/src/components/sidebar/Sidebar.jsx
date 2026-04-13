@@ -26,10 +26,16 @@ export default function Sidebar({ isOpen, setIsOpen }) {
   const getUser = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
+      const token = localStorage.getItem("token");
       if (!user || !user.email) return;
 
       const res = await fetch(
         `http://localhost:8080/api/users/email?email=${encodeURIComponent(user.email)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       if (!res.ok) {

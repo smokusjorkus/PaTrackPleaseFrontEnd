@@ -60,7 +60,10 @@ export default function EditTaskTab({ task, onClose, refreshTasks }) {
         `http://localhost:8080/api/tasks/edit/${formData.id}?email=${encodeURIComponent(userEmail)}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
           body: JSON.stringify(formData),
         },
       );

@@ -1,5 +1,6 @@
 import React from "react";
 import "./FeaturesHeroStyle.css";
+import { Link } from "react-router-dom";
 
 export default function FeaturesHero() {
   const features = [
@@ -22,11 +23,6 @@ export default function FeaturesHero() {
       icon: "🔍",
       title: "Quick Search",
       desc: "Find tasks instantly using keywords, filters, and sorting options.",
-    },
-    {
-      icon: "🤝",
-      title: "Easy Sharing",
-      desc: "Share lists and plans with friends or teammates without the clutter.",
     },
     {
       icon: "🔒",
@@ -62,7 +58,9 @@ export default function FeaturesHero() {
         </div>
 
         <div className="features-cta">
-          <button className="primary-btn">Get Started</button>
+          <Link to="/register">
+            <button className="primary-btn">Get Started</button>
+          </Link>
           <button className="secondary-btn">Learn More</button>
         </div>
       </div>

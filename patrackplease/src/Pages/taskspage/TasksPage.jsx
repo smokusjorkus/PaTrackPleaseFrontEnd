@@ -42,16 +42,18 @@ export default function TasksPage({ isOpen, setIsOpen }) {
   const fetchUserTasks = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
+      const token = localStorage.getItem("token"); // ← add
       if (!user?.email) return;
 
       const res = await fetch(
         `http://localhost:8080/api/tasks?email=${encodeURIComponent(user.email)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ← add
+          },
+        },
       );
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch tasks");
-      }
-
+      if (!res.ok) throw new Error("Failed to fetch tasks");
       const data = await res.json();
       setTasks(data);
     } catch (error) {
@@ -62,10 +64,17 @@ export default function TasksPage({ isOpen, setIsOpen }) {
   const fetchUserAlarms = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
+      const token = localStorage.getItem("token");
+      if (!user?.email || !token) return;
       if (!user?.email) return;
 
       const res = await fetch(
         `http://localhost:8080/api/alarms?email=${encodeURIComponent(user.email)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       if (!res.ok) {
@@ -82,22 +91,23 @@ export default function TasksPage({ isOpen, setIsOpen }) {
   const fetchTaskAlarms = async (taskId) => {
     try {
       if (!taskId) return [];
+      const token = localStorage.getItem("token"); // ← add
 
       const res = await fetch(
         `http://localhost:8080/api/alarms/task/${taskId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ← add
+          },
+        },
       );
-
-      if (!res.ok) {
-        return [];
-      }
-
+      if (!res.ok) return [];
       return await res.json();
     } catch (error) {
       console.error("Error fetching task alarms:", error);
       return [];
     }
   };
-
   const getDateParts = (dateString) => {
     const date = new Date(dateString);
 

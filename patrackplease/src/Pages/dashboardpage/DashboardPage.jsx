@@ -16,10 +16,16 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
   const getUser = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
+      const token = localStorage.getItem("token");
       if (!user) return;
 
       const res = await fetch(
         `http://localhost:8080/api/users/email?email=${encodeURIComponent(user.email)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       if (res.ok) {
@@ -34,16 +40,26 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
   const getTasks = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
+      const token = localStorage.getItem("token"); // 1. Get the token
       if (!user) return;
 
       const res = await fetch(
         `http://localhost:8080/api/tasks?email=${encodeURIComponent(user.email)}`,
+        {
+          // 2. Add the headers object here
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        },
       );
 
       if (res.ok) {
         const data = await res.json();
         console.log("Tasks:", data);
         setTasks(data);
+      } else if (res.status === 403) {
+        console.error("Access Forbidden: Check if token is valid");
       }
     } catch (error) {
       console.log("Error fetching tasks:", error);
