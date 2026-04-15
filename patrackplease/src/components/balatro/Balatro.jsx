@@ -23,12 +23,9 @@ const fragment = `
   void main() {
     vec2 uv = vUv;
     float t = uTime * 0.5;
-    
-    // Create the "Balatro" wavy effect
     float noise = sin(uv.x * 3.0 + t) * cos(uv.y * 3.0 + t);
     vec3 finalColor = mix(uColor1, uColor2, uv.x + noise);
     finalColor = mix(finalColor, uColor3, uv.y);
-    
     gl_FragColor = vec4(finalColor, 1.0);
   }
 `;
@@ -45,6 +42,12 @@ export default function Balatro({
 
     const renderer = new Renderer({ alpha: true, antialias: true });
     const gl = renderer.gl;
+
+    // Make the canvas fill its parent, not the window
+    gl.canvas.style.width = "100%";
+    gl.canvas.style.height = "100%";
+    gl.canvas.style.display = "block";
+
     containerRef.current.appendChild(gl.canvas);
 
     const geometry = new Geometry(gl, {
@@ -70,7 +73,9 @@ export default function Balatro({
     const mesh = new Mesh(gl, { geometry, program });
 
     const resize = () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      // Use the container's size, not the window
+      const { offsetWidth, offsetHeight } = containerRef.current;
+      renderer.setSize(offsetWidth, offsetHeight);
     };
     window.addEventListener("resize", resize);
     resize();
@@ -96,7 +101,8 @@ export default function Balatro({
     <div
       ref={containerRef}
       style={{
-        position: "fixed",
+        // Changed from fixed to absolute, fills whatever parent it's in
+        position: "absolute",
         inset: 0,
         zIndex: -1,
         pointerEvents: "none",

@@ -19,6 +19,19 @@
   pointer-events: none;
 }
 
+.hero-balatro-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 1; /* above glow (z-index: 0), below content (z-index: 2) */
+  pointer-events: none; /* clicks pass through to buttons */
+  overflow: hidden;
+}
+
+.hero-balatro-wrapper > * {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .hero-background-glow::before {
   content: "";
   position: absolute;
@@ -48,6 +61,7 @@
 }
 
 .hero-title {
+  color: #fffdf7;
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
@@ -56,7 +70,7 @@
 
 .hero-subtitle {
   font-size: 1.2rem;
-  color: #555;
+  color: #000000;
   margin-bottom: 2rem;
 }
 

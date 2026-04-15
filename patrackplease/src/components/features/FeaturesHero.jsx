@@ -7,7 +7,7 @@ export default function FeaturesHero() {
     {
       icon: "🗂️",
       title: "Task Organization",
-      desc: "Create, group, and prioritize tasks so you always know what to do next.",
+      desc: "Create and prioritize tasks so you always know what to do next.",
     },
     {
       icon: "⏰",

@@ -33,7 +33,7 @@
 
 .navbar-links a {
   text-decoration: none;
-  color: black;
+  color: #ffffff;
   cursor: pointer;
   transition: 0.2s ease;
 }
@@ -44,7 +44,7 @@
 
 .Nav-barLogo {
   text-decoration: none;
-  color: black;
+  color: #ffffff;
 }
 
 /* 🔽 Hamburger icon (hidden by default) */
