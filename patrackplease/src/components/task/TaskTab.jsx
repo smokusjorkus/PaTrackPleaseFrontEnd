@@ -18,7 +18,7 @@ export default function TaskTab({
   const [selectedTaskAlarms, setSelectedTaskAlarms] = useState([]);
   const [showEditingTask, setShowEditingTask] = useState(null);
   const [showAlarmTab, setShowAlarmTab] = useState(false);
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   // --- CRUD Handlers ---
   const handleMarkAsDone = async (id) => {
     const confirmDone = window.confirm("Are you done with this task?");
@@ -26,7 +26,7 @@ export default function TaskTab({
     try {
       const token = localStorage.getItem("token"); // ← add
       const res = await fetch(
-        `http://localhost:8080/api/tasks/${id}/status?status=DONE`,
+        `${API_BASE_URL}/api/tasks/${id}/status?status=DONE`,
         {
           method: "PUT",
           headers: {
@@ -47,7 +47,7 @@ export default function TaskTab({
     if (!window.confirm("Delete this task?")) return;
     try {
       const token = localStorage.getItem("token"); // ← add
-      const res = await fetch(`http://localhost:8080/api/tasks/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/tasks/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`, // ← add
@@ -67,7 +67,7 @@ export default function TaskTab({
     if (!window.confirm("Delete this alarm?")) return;
     try {
       const token = localStorage.getItem("token"); // ← add
-      const res = await fetch(`http://localhost:8080/api/alarms/${alarmId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/alarms/${alarmId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`, // ← add
