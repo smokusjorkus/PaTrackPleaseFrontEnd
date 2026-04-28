@@ -101,6 +101,7 @@ export default function RegisterPage() {
       }
 
       toast.success("Registration successful! Please login.");
+      console.log("API BASE URL:", API_BASE_URL);
       nav("/login");
       return;
     } catch (error) {
