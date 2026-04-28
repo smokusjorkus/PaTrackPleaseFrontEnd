@@ -49,7 +49,13 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       // Update states with backend data
       setUserName(data.username);
       // Ensure we handle cases where profileImageUrl might be null
-      setImage(data.profileImageUrl || "");
+      let profileUrl = data.profileImageUrl || "";
+
+      if (profileUrl.startsWith("http://localhost:8080")) {
+        profileUrl = profileUrl.replace("http://localhost:8080", API_BASE_URL);
+      }
+
+      setImage(profileUrl);
     } catch (error) {
       console.log("Error fetching user:", error);
     }

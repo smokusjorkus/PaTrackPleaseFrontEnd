@@ -37,7 +37,13 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
       setName(data.username);
       setEmail(data.email);
       // IMPORTANT: Using profileImageUrl to match your Java User.java
-      setImage(data.profileImageUrl || "");
+      let profileUrl = data.profileImageUrl || "";
+
+      if (profileUrl.startsWith("http://localhost:8080")) {
+        profileUrl = profileUrl.replace("http://localhost:8080", API_BASE_URL);
+      }
+
+      setImage(profileUrl);
     } catch (error) {
       console.log("Error fetching user:", error);
     }
