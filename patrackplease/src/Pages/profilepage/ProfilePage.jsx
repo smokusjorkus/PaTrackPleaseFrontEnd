@@ -104,6 +104,10 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
 
       let profileUrl = updatedData.profileImageUrl || "";
 
+      if (profileUrl.startsWith("/uploads/")) {
+        profileUrl = `${API_BASE_URL}${profileUrl}`;
+      }
+
       if (profileUrl.startsWith("http://localhost:8080")) {
         profileUrl = profileUrl.replace("http://localhost:8080", API_BASE_URL);
       }

@@ -49,7 +49,11 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       // Update states with backend data
       setUserName(data.username);
       // Ensure we handle cases where profileImageUrl might be null
-      let profileUrl = data.profileImageUrl || "";
+      let profileUrl = updatedData.profileImageUrl || "";
+
+      if (profileUrl.startsWith("/uploads/")) {
+        profileUrl = `${API_BASE_URL}${profileUrl}`;
+      }
 
       if (profileUrl.startsWith("http://localhost:8080")) {
         profileUrl = profileUrl.replace("http://localhost:8080", API_BASE_URL);
