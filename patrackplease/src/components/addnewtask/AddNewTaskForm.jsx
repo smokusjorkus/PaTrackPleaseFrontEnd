@@ -12,6 +12,7 @@ export default function AddNewTaskForm({ onClose, refreshTasks }) {
   const [status, setStatus] = useState("Upcoming");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const nav = useNavigate();
 
@@ -46,7 +47,7 @@ export default function AddNewTaskForm({ onClose, refreshTasks }) {
       };
 
       const res = await fetch(
-        `http://localhost:8080/api/tasks?email=${encodeURIComponent(user.email)}`,
+        `${API_BASE_URL}/api/tasks?email=${encodeURIComponent(user.email)}`,
         {
           method: "POST",
           headers: {

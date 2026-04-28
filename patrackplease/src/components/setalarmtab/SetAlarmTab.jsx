@@ -17,6 +17,7 @@ export default function SetAlarmTab({
   const [alarmStart, setAlarmStart] = useState("");
   const [alarmFinish, setAlarmFinish] = useState("");
   const [loading, setLoading] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const saveAlarm = async () => {
     try {
@@ -49,7 +50,7 @@ export default function SetAlarmTab({
       console.log("Sending alarm data:", alarmData);
 
       const res = await fetch(
-        `http://localhost:8080/api/alarms?email=${encodeURIComponent(user.email)}`,
+        `${API_BASE_URL}/api/alarms?email=${encodeURIComponent(user.email)}`,
         {
           method: "POST",
           headers: {

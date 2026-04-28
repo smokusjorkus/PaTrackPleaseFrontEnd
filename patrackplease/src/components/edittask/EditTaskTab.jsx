@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 export default function EditTaskTab({ task, onClose, refreshTasks }) {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userEmail = storedUser?.email || "";
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [formData, setFormData] = useState({
     id: "",
@@ -52,12 +53,12 @@ export default function EditTaskTab({ task, onClose, refreshTasks }) {
     console.log("Updating task ID:", formData.id);
     console.log(
       "URL:",
-      `http://localhost:8080/api/tasks/${formData.id}?email=${encodeURIComponent(userEmail)}`,
+      `${API_BASE_URL}/api/tasks/${formData.id}?email=${encodeURIComponent(userEmail)}`,
     );
 
     try {
       const res = await fetch(
-        `http://localhost:8080/api/tasks/edit/${formData.id}?email=${encodeURIComponent(userEmail)}`,
+        `${API_BASE_URL}/api/tasks/edit/${formData.id}?email=${encodeURIComponent(userEmail)}`,
         {
           method: "PUT",
           headers: {
