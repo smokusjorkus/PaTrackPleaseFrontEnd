@@ -45,7 +45,7 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
       if (!user) return;
 
       const res = await fetch(
-        `http://localhost:8080/api/tasks?email=${encodeURIComponent(user.email)}`,
+        `${API_BASE_URL}/api/tasks?email=${encodeURIComponent(user.email)}`,
         {
           // 2. Add the headers object here
           headers: {
