@@ -12,7 +12,7 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
   const [image, setImage] = useState(""); // Syncs with profileImageUrl
   const [editOpen, setEditOpen] = useState(false);
   const [editType, setEditType] = useState("");
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   // FETCH USER DATA
   const getUser = async () => {
     try {
@@ -21,7 +21,7 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
       if (!user) return;
 
       const res = await fetch(
-        `http://localhost:8080/api/users/email?email=${encodeURIComponent(user.email)}`,
+        `${API_BASE_URL}/api/users/email?email=${encodeURIComponent(user.email)}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
         formData.append("file", newValue);
         formData.append("email", user.email);
 
-        res = await fetch(`http://localhost:8080/api/users/upload-photo`, {
+        res = await fetch(`${API_BASE_URL}/api/users/upload-photo`, {
           method: "POST",
           body: formData,
         });
@@ -68,7 +68,7 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
         else updateBody = { username: newValue };
 
         res = await fetch(
-          `http://localhost:8080/api/users/update?email=${encodeURIComponent(user.email)}`,
+          `${API_BASE_URL}/api/users/update?email=${encodeURIComponent(user.email)}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

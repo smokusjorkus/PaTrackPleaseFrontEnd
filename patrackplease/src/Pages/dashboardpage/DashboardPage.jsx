@@ -12,6 +12,7 @@ import Button from "../../components/button/Button";
 export default function DashboardPage({ isOpen, setIsOpen }) {
   const [name, setName] = useState("");
   const [tasks, setTasks] = useState([]);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const getUser = async () => {
     try {
@@ -20,7 +21,7 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
       if (!user) return;
 
       const res = await fetch(
-        `http://localhost:8080/api/users/email?email=${encodeURIComponent(user.email)}`,
+        `${API_BASE_URL}/api/users/email?email=${encodeURIComponent(user.email)}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

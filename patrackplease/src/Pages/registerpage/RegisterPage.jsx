@@ -19,7 +19,7 @@ export default function RegisterPage() {
   const nav = useNavigate();
   const [error, setError] = useState("");
   const [isVisible, setIsVisible] = useState(false);
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const hasCapital = /[A-Z]/.test(formData.password);
   const hasNumber = /\d/.test(formData.password);
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(formData.password);
@@ -87,7 +87,7 @@ export default function RegisterPage() {
     };
 
     try {
-      const res = await fetch("http://localhost:8080/api/register", {
+      const res = await fetch(`${API_BASE_URL}/api/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

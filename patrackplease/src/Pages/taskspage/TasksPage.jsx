@@ -18,6 +18,8 @@ export default function TasksPage({ isOpen, setIsOpen }) {
   const triggeredAlarms = useRef(new Set());
   const [selectedTaskOption, setSelectedTaskOption] = useState(null);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const handleAlarmTrigger = (alarmData) => {
     if (!alarmData) return;
 
@@ -46,7 +48,7 @@ export default function TasksPage({ isOpen, setIsOpen }) {
       if (!user?.email) return;
 
       const res = await fetch(
-        `http://localhost:8080/api/tasks?email=${encodeURIComponent(user.email)}`,
+        `${API_BASE_URL}/api/tasks?email=${encodeURIComponent(user.email)}`,
         {
           headers: {
             Authorization: `Bearer ${token}`, // ← add
@@ -69,7 +71,7 @@ export default function TasksPage({ isOpen, setIsOpen }) {
       if (!user?.email) return;
 
       const res = await fetch(
-        `http://localhost:8080/api/alarms?email=${encodeURIComponent(user.email)}`,
+        `${API_BASE_URL}/api/alarms?email=${encodeURIComponent(user.email)}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -93,14 +95,11 @@ export default function TasksPage({ isOpen, setIsOpen }) {
       if (!taskId) return [];
       const token = localStorage.getItem("token"); // ← add
 
-      const res = await fetch(
-        `http://localhost:8080/api/alarms/task/${taskId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // ← add
-          },
+      const res = await fetch(`${API_BASE_URL}/api/alarms/task/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // ← add
         },
-      );
+      });
       if (!res.ok) return [];
       return await res.json();
     } catch (error) {

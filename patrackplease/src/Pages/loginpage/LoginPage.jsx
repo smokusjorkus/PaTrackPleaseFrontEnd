@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [error, setError] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const nav = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -39,7 +40,7 @@ export default function LoginPage() {
     };
 
     // We wrap the fetch in a promise so toast can track it
-    const loginPromise = fetch("http://localhost:8080/api/login", {
+    const loginPromise = fetch(`${API_BASE_URL}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
