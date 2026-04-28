@@ -53,22 +53,31 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
   const handleSave = async (type, newValue) => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
+      const token = localStorage.getItem("token");
+
       if (!user) return;
 
       let res;
 
       if (type === "Photo") {
         const formData = new FormData();
-        // newValue is the File object or null (for removal)
-        formData.append("file", newValue);
+
+        if (newValue !== null) {
+          formData.append("file", newValue);
+        }
+
         formData.append("email", user.email);
 
         res = await fetch(`${API_BASE_URL}/api/users/upload-photo`, {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           body: formData,
         });
       } else {
         let updateBody = {};
+
         if (type === "Email") updateBody = { email: newValue };
         else if (type === "Password") updateBody = { password: newValue };
         else updateBody = { username: newValue };
@@ -77,7 +86,10 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
           `${API_BASE_URL}/api/users/update?email=${encodeURIComponent(user.email)}`,
           {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
             body: JSON.stringify(updateBody),
           },
         );
@@ -87,11 +99,16 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
 
       const updatedData = await res.json();
 
-      // Refreshing UI with fresh data from Backend
       setName(updatedData.username);
       setEmail(updatedData.email);
-      setImage(updatedData.profileImageUrl || ""); // Update to match Java Model
 
+      let profileUrl = updatedData.profileImageUrl || "";
+
+      if (profileUrl.startsWith("http://localhost:8080")) {
+        profileUrl = profileUrl.replace("http://localhost:8080", API_BASE_URL);
+      }
+
+      setImage(profileUrl);
       localStorage.setItem("user", JSON.stringify(updatedData));
 
       toast.success(
