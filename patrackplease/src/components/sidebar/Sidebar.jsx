@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import AddNewTaskForm from "../../components/addnewtask/AddNewTaskForm";
 import {
   User,
-  Search,
   CirclePlus,
   LayoutDashboard,
   SquareCheck,
@@ -18,16 +17,31 @@ export default function Sidebar({ isOpen, setIsOpen }) {
   const nav = useNavigate();
   const location = useLocation();
 
-  // State for user data fetched from API
   const [userName, setUserName] = useState("");
   const [image, setImage] = useState("");
   const [showForm, setShowForm] = useState(false);
+
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const formatProfileUrl = (profileImageUrl) => {
+    let profileUrl = profileImageUrl || "";
+
+    if (profileUrl.startsWith("/uploads/")) {
+      profileUrl = `${API_BASE_URL}${profileUrl}`;
+    }
+
+    if (profileUrl.startsWith("http://localhost:8080")) {
+      profileUrl = profileUrl.replace("http://localhost:8080", API_BASE_URL);
+    }
+
+    return profileUrl;
+  };
 
   const getUser = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
       const token = localStorage.getItem("token");
+
       if (!user || !user.email) return;
 
       const res = await fetch(
@@ -46,20 +60,8 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
       const data = await res.json();
 
-      // Update states with backend data
       setUserName(data.username);
-      // Ensure we handle cases where profileImageUrl might be null
-      let profileUrl = data.profileImageUrl || "";
-
-      if (profileUrl.startsWith("/uploads/")) {
-        profileUrl = `${API_BASE_URL}${profileUrl}`;
-      }
-
-      if (profileUrl.startsWith("http://localhost:8080")) {
-        profileUrl = profileUrl.replace("http://localhost:8080", API_BASE_URL);
-      }
-
-      setImage(profileUrl);
+      setImage(formatProfileUrl(data.profileImageUrl));
     } catch (error) {
       console.log("Error fetching user:", error);
     }
@@ -67,6 +69,16 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
   useEffect(() => {
     getUser();
+
+    const refreshSidebar = () => {
+      getUser();
+    };
+
+    window.addEventListener("profileUpdated", refreshSidebar);
+
+    return () => {
+      window.removeEventListener("profileUpdated", refreshSidebar);
+    };
   }, []);
 
   const handlelogout = () => {
@@ -77,7 +89,6 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
   return (
     <div className={`Sidebar-container ${isOpen ? "open" : "closed"}`}>
-      {/* TOP SECTION */}
       <div>
         <div className="sidebar-profile-container">
           <div className="account">
@@ -154,8 +165,6 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           </div>
         </nav>
       </div>
-
-      {/* FOOTER */}
     </div>
   );
 }

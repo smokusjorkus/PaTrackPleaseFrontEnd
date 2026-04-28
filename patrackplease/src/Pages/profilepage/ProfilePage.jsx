@@ -9,16 +9,32 @@ import toast from "react-hot-toast";
 export default function ProfilePage({ isOpen, setIsOpen }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [image, setImage] = useState(""); // Syncs with profileImageUrl
+  const [image, setImage] = useState("");
   const [editOpen, setEditOpen] = useState(false);
   const [editType, setEditType] = useState("");
+
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  // FETCH USER DATA
+
+  const formatProfileUrl = (profileImageUrl) => {
+    let profileUrl = profileImageUrl || "";
+
+    if (profileUrl.startsWith("/uploads/")) {
+      profileUrl = `${API_BASE_URL}${profileUrl}`;
+    }
+
+    if (profileUrl.startsWith("http://localhost:8080")) {
+      profileUrl = profileUrl.replace("http://localhost:8080", API_BASE_URL);
+    }
+
+    return profileUrl;
+  };
+
   const getUser = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
       const token = localStorage.getItem("token");
-      if (!user) return;
+
+      if (!user || !user.email) return;
 
       const res = await fetch(
         `${API_BASE_URL}/api/users/email?email=${encodeURIComponent(user.email)}`,
@@ -29,33 +45,24 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
         },
       );
 
-      if (!res.ok) throw new Error("Failed to fetch");
+      if (!res.ok) throw new Error("Failed to fetch user");
 
       const data = await res.json();
 
-      // Syncing state with Backend Model
       setName(data.username);
       setEmail(data.email);
-      // IMPORTANT: Using profileImageUrl to match your Java User.java
-      let profileUrl = data.profileImageUrl || "";
-
-      if (profileUrl.startsWith("http://localhost:8080")) {
-        profileUrl = profileUrl.replace("http://localhost:8080", API_BASE_URL);
-      }
-
-      setImage(profileUrl);
+      setImage(formatProfileUrl(data.profileImageUrl));
     } catch (error) {
       console.log("Error fetching user:", error);
     }
   };
 
-  // SAVE/UPDATE LOGIC
   const handleSave = async (type, newValue) => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
       const token = localStorage.getItem("token");
 
-      if (!user) return;
+      if (!user || !user.email) return;
 
       let res;
 
@@ -78,9 +85,13 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
       } else {
         let updateBody = {};
 
-        if (type === "Email") updateBody = { email: newValue };
-        else if (type === "Password") updateBody = { password: newValue };
-        else updateBody = { username: newValue };
+        if (type === "Email") {
+          updateBody = { email: newValue };
+        } else if (type === "Password") {
+          updateBody = { password: newValue };
+        } else {
+          updateBody = { username: newValue };
+        }
 
         res = await fetch(
           `${API_BASE_URL}/api/users/update?email=${encodeURIComponent(user.email)}`,
@@ -101,19 +112,12 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
 
       setName(updatedData.username);
       setEmail(updatedData.email);
+      setImage(formatProfileUrl(updatedData.profileImageUrl));
 
-      let profileUrl = updatedData.profileImageUrl || "";
-
-      if (profileUrl.startsWith("/uploads/")) {
-        profileUrl = `${API_BASE_URL}${profileUrl}`;
-      }
-
-      if (profileUrl.startsWith("http://localhost:8080")) {
-        profileUrl = profileUrl.replace("http://localhost:8080", API_BASE_URL);
-      }
-
-      setImage(profileUrl);
       localStorage.setItem("user", JSON.stringify(updatedData));
+
+      // Tells Sidebar to refetch the latest profile image/name
+      window.dispatchEvent(new Event("profileUpdated"));
 
       toast.success(
         newValue === null && type === "Photo"
@@ -139,7 +143,7 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
 
   return (
     <div className="profile-page animate__animated animate__fadeIn">
-      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} name={name} />
+      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
       <main className={`profile-main ${isOpen ? "open" : "closed"}`}>
         <div className="profile-content">
@@ -147,7 +151,6 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
 
           <div className="account-details">
             <div className="profile-image">
-              {/* Pass the dynamic image state to ImageHolder */}
               <ImageHolder src={image} />
 
               <div className="account-email-name">
@@ -162,12 +165,14 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
                   value="Change Photo"
                   onClick={() => openEditModal("Photo")}
                 />
+
                 <Button
                   value="Remove Photo"
                   color="#E4E4E4"
                   onClick={() => handleSave("Photo", null)}
                 />
               </div>
+
               <p className="image-desc">JPG or PNG. Max size of 800K</p>
             </div>
           </div>
@@ -179,6 +184,7 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
               </label>
               <p className="detail-detail">{name}</p>
             </div>
+
             <Button
               value="Change Username"
               onClick={() => openEditModal("Username")}
@@ -191,6 +197,7 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
               <h1 className="detail-title">Email</h1>
               <p className="detail-detail">{email}</p>
             </div>
+
             <Button
               value="Change Email"
               fontsize="1.0rem"
@@ -208,6 +215,7 @@ export default function ProfilePage({ isOpen, setIsOpen }) {
                 ••••••••••
               </p>
             </div>
+
             <Button
               value="Change Password"
               fontsize="1.0rem"
