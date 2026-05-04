@@ -36,11 +36,9 @@
 /* ── KPI row ────────────────────────────── */
 .Kpi-row {
   display: grid;
-  grid-template-columns: repeat(4, 220px); /* fixed card width */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
   margin-top: 30px;
-
-  justify-content: center; /* actual centering effect */
 }
 
 /* ── Pending section ────────────────────── */
