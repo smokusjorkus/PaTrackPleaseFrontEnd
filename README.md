@@ -20,6 +20,7 @@ Before running the project, install the following:
 📦 Maven
 🐳 (Optional) Docker & Docker Compose
 🔧 Git
+-
 📥 2. Clone the Repository
 git clone https://github.com/your-username/PaTrackplease.git
 cd PaTrackplease
