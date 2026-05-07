@@ -39,8 +39,7 @@ export default function RegisterPage() {
       !formData.firstName ||
       !formData.lastName ||
       !formData.email ||
-      !formData.password ||
-      !formData.confirmPassword
+      !formData.password
     ) {
       toast.error(
         `Please fill your ${
@@ -82,8 +81,7 @@ export default function RegisterPage() {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword,
+      password: formData.password
     };
 
     try {
