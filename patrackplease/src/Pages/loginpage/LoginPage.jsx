@@ -40,7 +40,7 @@ export default function LoginPage() {
     };
 
     // We wrap the fetch in a promise so toast can track it
-    const loginPromise = fetch(`${API_BASE_URL}/api/login`, {
+    const loginPromise = fetch(`${API_BASE_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
