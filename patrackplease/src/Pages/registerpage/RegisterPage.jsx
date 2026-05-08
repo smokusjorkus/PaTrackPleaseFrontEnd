@@ -19,7 +19,12 @@ export default function RegisterPage() {
   const nav = useNavigate();
   const [error, setError] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+
+  // 1. Added loading state to prevent double-submitting
+  const [isLoading, setIsLoading] = useState(false);
+
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const hasCapital = /[A-Z]/.test(formData.password);
   const hasNumber = /\d/.test(formData.password);
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(formData.password);
@@ -76,6 +81,7 @@ export default function RegisterPage() {
       return;
     }
 
+    // 2. Ensuring the payload perfectly matches the Spring Boot DTO
     const payload = {
       username: formData.userName,
       firstName: formData.firstName,
@@ -85,6 +91,9 @@ export default function RegisterPage() {
       confirmPassword: formData.confirmPassword,
     };
 
+    // 3. Disable the button right before the network request fires
+    setIsLoading(true);
+
     try {
       const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
@@ -92,27 +101,27 @@ export default function RegisterPage() {
         body: JSON.stringify(payload),
       });
 
-      // 1. Check if the server rejected the request BEFORE parsing JSON
+      // 4. Defensive check to prevent React from crashing on plain text 400 errors
       if (!res.ok) {
-        // Try to read it as text so it doesn't crash on plain text errors
         const errorText = await res.text();
-
-        // Update the UI with the exact error from Spring Boot
         setError(errorText || "Registration failed!");
         toast.error(errorText || "Registration failed!");
+        setIsLoading(false); // Re-enable the button so the user can fix their typo and try again
         return;
       }
 
-      // 2. If we reach here, res.ok is true! We can safely parse the JSON.
+      // If we made it here, res.ok is true and the server returned a 200/201 success status!
       const data = await res.json();
 
       toast.success("Registration successful! Please login.");
       console.log("API BASE URL:", API_BASE_URL);
+
+      // Note: We don't need to setIsLoading(false) here because we are navigating away from the page
       nav("/login");
     } catch (error) {
-      // This will now only catch actual network failures (like server being offline)
       setError("A network error occurred. Please try again later.");
       console.error(`Fetch error:`, error);
+      setIsLoading(false); // Re-enable the button if the server is totally offline
     }
   };
 
@@ -216,8 +225,17 @@ export default function RegisterPage() {
             <label htmlFor="togglePassword">Show Password</label>
           </div>
 
-          <button className="register-button" type="submit">
-            Create Account
+          {/* 5. Button visually updates and disables itself while loading */}
+          <button
+            className="register-button"
+            type="submit"
+            disabled={isLoading}
+            style={{
+              opacity: isLoading ? 0.7 : 1,
+              cursor: isLoading ? "not-allowed" : "pointer",
+            }}
+          >
+            {isLoading ? "Creating Account..." : "Create Account"}
           </button>
 
           {error && <ErrorMessage value={error} />}
