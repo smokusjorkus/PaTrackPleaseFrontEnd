@@ -81,7 +81,7 @@ export default function RegisterPage() {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
-      password: formData.password
+      password: formData.password,
     };
 
     try {
@@ -103,7 +103,8 @@ export default function RegisterPage() {
       nav("/login");
       return;
     } catch (error) {
-      setError("An error occurred. Please try again later.");
+      setError("An error occurred. Please try again later");
+      console.log(`error: ${error}`);
     }
   };
 
