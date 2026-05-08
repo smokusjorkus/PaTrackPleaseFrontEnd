@@ -92,20 +92,27 @@ export default function RegisterPage() {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
-
+      // 1. Check if the server rejected the request BEFORE parsing JSON
       if (!res.ok) {
-        setError(data.message || "Registration failed!");
+        // Try to read it as text so it doesn't crash on plain text errors
+        const errorText = await res.text();
+
+        // Update the UI with the exact error from Spring Boot
+        setError(errorText || "Registration failed!");
+        toast.error(errorText || "Registration failed!");
         return;
       }
+
+      // 2. If we reach here, res.ok is true! We can safely parse the JSON.
+      const data = await res.json();
 
       toast.success("Registration successful! Please login.");
       console.log("API BASE URL:", API_BASE_URL);
       nav("/login");
-      return;
     } catch (error) {
-      setError("An error occurred. Please try again later");
-      console.log(`error: ${error}`);
+      // This will now only catch actual network failures (like server being offline)
+      setError("A network error occurred. Please try again later.");
+      console.error(`Fetch error:`, error);
     }
   };
 
