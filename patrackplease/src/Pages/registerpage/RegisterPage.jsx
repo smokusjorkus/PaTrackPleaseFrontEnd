@@ -82,6 +82,7 @@ export default function RegisterPage() {
       lastName: formData.lastName,
       email: formData.email,
       password: formData.password,
+      confirmPassword: formData.confirmPassword,
     };
 
     try {
