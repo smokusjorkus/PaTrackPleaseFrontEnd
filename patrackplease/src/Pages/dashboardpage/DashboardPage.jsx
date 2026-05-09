@@ -101,14 +101,14 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
           <div className="Kpi-row">
             <KPI
               KPIName="Completed Tasks"
-              backgroundColor="#FFEC1F"
+              backgroundColor="#1fff2a"
               KPIValue={completedTasks}
             >
               <CircleCheck size="30" />
             </KPI>
             <KPI
               KPIName="Pending Tasks"
-              backgroundColor="#FF785A"
+              backgroundColor="#ffec1f"
               KPIValue={pendingTasks}
             >
               <CircleDashed size="30" />
@@ -116,7 +116,7 @@ export default function DashboardPage({ isOpen, setIsOpen }) {
             <KPI
               KPIName="Overdue"
               KPIValue={overdueTasks}
-              backgroundColor="#FFD25A"
+              backgroundColor="#ff785a"
             >
               <Radiation size="30" />
             </KPI>
