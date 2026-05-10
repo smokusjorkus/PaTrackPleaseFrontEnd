@@ -27,6 +27,7 @@ export default function SetAlarmTab({ task, onClose, refreshAllAlarms }) {
 
       if (!user?.email || !token) {
         setError("User session not found. Please log in again.");
+        toast("Please enter all fields.");
         return;
       }
 
@@ -123,7 +124,6 @@ export default function SetAlarmTab({ task, onClose, refreshAllAlarms }) {
             {loading ? "Saving..." : "Save Alarm"}
           </Button>
         </div>
-        {error && <ErrorMessage message={error} />}
       </div>
     </div>
   );
