@@ -121,9 +121,9 @@ export default function SetAlarmTab({ task, onClose, refreshAllAlarms }) {
             disabled={loading}
           >
             {loading ? "Saving..." : "Save Alarm"}
-            {error && <ErrorMessage message={error} />}
           </Button>
         </div>
+        {error && <ErrorMessage message={error} />}
       </div>
     </div>
   );
