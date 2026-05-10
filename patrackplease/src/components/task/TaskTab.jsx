@@ -1,133 +1,230 @@
-import React, { useState } from "react";
-import "./SetAlarmTabStyle.css";
-import Button from "../button/Button";
-import ErrorMessage from "../errormessage/ErrorMessage";
-import toast from "react-hot-toast";
+import React, { useState, useEffect, useRef } from "react";
+import "./TaskTabStyle.css";
 import "animate.css";
+import Button from "../button/Button";
+import { toast } from "react-hot-toast";
+import { Bell, Calendar } from "lucide-react";
+import SetAlarmTab from "../setalarmtab/SetAlarmTab";
+import EditTaskTab from "../edittask/EditTaskTab";
 
-export default function SetAlarmTab({ task, onClose, refreshAllAlarms }) {
-  const [error, setError] = useState(null);
-  const [alarmName, setAlarmName] = useState("");
-  const [alarmStart, setAlarmStart] = useState("");
-  const [alarmFinish, setAlarmFinish] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function TaskTab({
+  tasks,
+  refreshTasks,
+  alarms,
+  refreshAllAlarms,
+  refreshTaskAlarms,
+}) {
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTaskAlarms, setSelectedTaskAlarms] = useState([]);
+  const [showEditingTask, setShowEditingTask] = useState(null);
+  const [showAlarmTab, setShowAlarmTab] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-  const saveAlarm = async () => {
-    // 1. Validation
-    if (!alarmName.trim() || !alarmStart || !alarmFinish) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
+  // --- CRUD Handlers ---
+  const handleMarkAsDone = async (id) => {
+    const confirmDone = window.confirm("Are you done with this task?");
+    if (!confirmDone) return;
     try {
-      const userStr = localStorage.getItem("user");
-      const token = localStorage.getItem("token");
-      const user = userStr ? JSON.parse(userStr) : null;
-
-      if (!user?.email || !token) {
-        setError("Session expired. Please log in again.");
-        return;
-      }
-
-      console.log("Save button clicked!");
-      console.log("Current User:", localStorage.getItem("user"));
-      console.log("Task ID:", task?.id);
-      setLoading(true);
-      setError("");
-
-      // 2. Format dates to ISO (Add seconds and Z if your backend requires it)
-      const alarmData = {
-        alarmName: alarmName.trim(),
-        alarmStart: new Date(alarmStart).toISOString(),
-        alarmFinish: new Date(alarmFinish).toISOString(),
-        taskId: task.id,
-      };
-
-      console.log("Payload:", alarmData);
-
+      const token = localStorage.getItem("token"); // ← add
       const res = await fetch(
-        `${API_BASE_URL}/api/alarms?email=${encodeURIComponent(user.email)}`,
+        `${API_BASE_URL}/api/tasks/${id}/status?status=DONE`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // ← add
           },
-          body: JSON.stringify(alarmData),
         },
       );
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to save alarm.");
+      if (res.ok) {
+        toast.success("Task marked as done ✅");
+        await refreshTasks();
       }
-
-      toast.success("Alarm saved successfully! 🔔");
-
-      if (refreshAllAlarms) await refreshAllAlarms();
-      onClose();
-    } catch (err) {
-      console.error("Save alarm error:", err);
-      setError(err.message);
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      toast.error("Failed to update task.");
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this task?")) return;
+    try {
+      const token = localStorage.getItem("token"); // ← add
+      const res = await fetch(`${API_BASE_URL}/api/tasks/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // ← add
+        },
+      });
+      if (res.ok) {
+        await refreshTasks();
+        await refreshAllAlarms();
+        toast.success("Task deleted.");
+      }
+    } catch (error) {
+      toast.error("Delete failed.");
+    }
+  };
+
+  const handleDeleteAlarm = async (alarmId) => {
+    if (!window.confirm("Delete this alarm?")) return;
+    try {
+      const token = localStorage.getItem("token"); // ← add
+      const res = await fetch(`${API_BASE_URL}/api/alarms/${alarmId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`, // ← add
+        },
+      });
+      if (res.ok) {
+        toast.success("Alarm deleted.");
+        await refreshAllAlarms();
+      }
+    } catch (error) {
+      toast.error("Failed to delete alarm.");
+    }
+  };
+
+  const handleOpenAlarmModal = async (task) => {
+    if (!task?.id) return;
+    const taskAlarmData = await refreshTaskAlarms(task.id);
+    setSelectedTask(task);
+    setSelectedTaskAlarms(taskAlarmData || []);
+    setShowAlarmTab(true);
+  };
+
+  const handleOpenEditModal = (task) => {
+    if (!task?.id) return;
+    setSelectedTask(null); // ← clear first to force re-render
+    setShowEditingTask(false); // ← reset before reopening
+    setTimeout(() => {
+      setSelectedTask(task);
+      setShowEditingTask(true);
+    }, 0);
+  };
+
+  const getStatusClass = (status) => {
+    if (!status) return "upcoming";
+    return status.toLowerCase().trim().replace(/\s+/g, "-"); // "in-progress" ✅
+  };
+
   return (
-    <div className="modal_overlay_setAlarm animate__animated animate__fadeInUp">
-      <div className="modal_container_setAlarm">
-        <div className="modal_header">
-          <h2>Set Alarm ⏰</h2>
-          <button className="close_btn" onClick={onClose}>
-            ✕
-          </button>
+    <div className="task-tab-container animate__animated animate__fadeInUp">
+      {tasks && tasks.length > 0 ? (
+        tasks.map((task) => {
+          const taskAlarms = alarms.filter((alarm) => alarm.taskId === task.id);
+          return (
+            <div
+              key={task.id}
+              className={`task-container ${getStatusClass(task.status)}`}
+            >
+              <div className="task-header-row">
+                <div className="task-info-side">
+                  <div className="task-title">
+                    <h4>{task.taskName}</h4>
+                  </div>
+                  <div className="task-description">
+                    <p>{task.taskDescription}</p>
+                  </div>
+                  <div className="task-meta">
+                    <span className="task-duedate">
+                      <Calendar size={14} /> {task.dueDate}
+                    </span>
+                    <span className="task-status-pill">{task.status}</span>
+                  </div>
+                </div>
+                <div className="task-actions-side">
+                  <Button
+                    color="#f0f3ed"
+                    onClick={() => handleOpenAlarmModal(task)}
+                    fontsize="0.9rem"
+                  >
+                    <Bell size={16} /> Alarm
+                  </Button>
+                  <Button
+                    value="Edit"
+                    fontsize="0.9rem"
+                    onClick={() => handleOpenEditModal(task)}
+                  />
+                  <Button
+                    value="Delete"
+                    color="#ff785a"
+                    onClick={() => handleDelete(task.id)}
+                    fontsize="0.9rem"
+                  />
+                  {task.status !== "DONE" && (
+                    <Button
+                      value="Done"
+                      color="#1fff2a"
+                      onClick={() => handleMarkAsDone(task.id)}
+                      fontsize="0.9rem"
+                    />
+                  )}
+                </div>
+              </div>
+
+              {taskAlarms.length > 0 && (
+                <div className="task-alarms-footer">
+                  <p className="alarm-label">Active Alarms:</p>
+                  <div className="alarm-pills-container">
+                    {taskAlarms.map((alarm) => (
+                      <div
+                        key={alarm.id}
+                        className="alarm-pill"
+                        data-tooltip={`${alarm.alarmName}\n${
+                          alarm.alarmStart
+                            ? new Date(
+                                alarm.alarmStart.replace("Z", ""),
+                              ).toLocaleString()
+                            : "No time set"
+                        }`}
+                      >
+                        <Bell size={12} color="#ffd25a" />
+                        <span>{alarm.alarmName}</span>
+                        <Button
+                          style={{ marginLeft: "20px" }}
+                          value="Delete"
+                          onClick={() => handleDeleteAlarm(alarm.id)}
+                          color="transparent"
+                          fontsize="0.7rem"
+                          fontWeight="500"
+                          padding="5px"
+                        ></Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })
+      ) : (
+        <div className="no-tasks-container">
+          <p className="no-tasks">No tasks assigned for today.</p>
         </div>
+      )}
 
-        <div className="modal_body">
-          {error && <ErrorMessage message={error} />}
+      {showAlarmTab && selectedTask && (
+        <SetAlarmTab
+          task={selectedTask}
+          alarms={selectedTaskAlarms}
+          onClose={() => {
+            setShowAlarmTab(false);
+            setSelectedTask(null);
+            setSelectedTaskAlarms([]);
+          }}
+          refreshTasks={refreshTasks}
+          refreshAllAlarms={refreshAllAlarms}
+        />
+      )}
 
-          <label>Alarm Name</label>
-          <input
-            type="text"
-            value={alarmName}
-            placeholder="e.g. Reminder before task"
-            onChange={(e) => setAlarmName(e.target.value)}
-          />
-
-          <label>Start Time</label>
-          <input
-            type="datetime-local"
-            value={alarmStart}
-            onChange={(e) => setAlarmStart(e.target.value)}
-          />
-
-          <label>End Time</label>
-          <input
-            type="datetime-local"
-            value={alarmFinish}
-            onChange={(e) => setAlarmFinish(e.target.value)}
-          />
-        </div>
-
-        <div className="modal_footer">
-          <Button onClick={onClose} fontsize="1rem" fontWeight="300">
-            Cancel
-          </Button>
-          <Button
-            className="save_btn"
-            fontsize="1rem"
-            fontWeight="300"
-            color="#1fff2a"
-            onClick={saveAlarm}
-            disabled={loading}
-          >
-            {loading ? "Saving..." : "Save Alarm"}
-          </Button>
-        </div>
-      </div>
+      {showEditingTask && selectedTask && (
+        <EditTaskTab
+          task={selectedTask}
+          onClose={() => {
+            setShowEditingTask(false);
+            setSelectedTask(null); // ← add this
+          }}
+          refreshTasks={refreshTasks}
+        />
+      )}
     </div>
   );
 }
