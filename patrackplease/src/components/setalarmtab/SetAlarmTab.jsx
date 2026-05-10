@@ -27,7 +27,6 @@ export default function SetAlarmTab({ task, onClose, refreshAllAlarms }) {
 
       if (!user?.email || !token) {
         setError("User session not found. Please log in again.");
-        toast("Please enter all fields.");
         return;
       }
 
@@ -83,11 +82,10 @@ export default function SetAlarmTab({ task, onClose, refreshAllAlarms }) {
           <button className="close_btn" onClick={onClose}>
             ✕
           </button>
+          {error && <ErrorMessage message={error} />}
         </div>
 
         <div className="modal_body">
-          {error && <ErrorMessage message={error} />}
-
           <label>Alarm Name</label>
           <input
             type="text"
