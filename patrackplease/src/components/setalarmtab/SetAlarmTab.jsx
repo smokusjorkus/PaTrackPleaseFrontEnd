@@ -79,10 +79,10 @@ export default function SetAlarmTab({ task, onClose, refreshAllAlarms }) {
       <div className="modal_container_setAlarm">
         <div className="modal_header">
           <h2>Set Alarm ⏰</h2>
+          <h5>Please fill in all fields.</h5>
           <button className="close_btn" onClick={onClose}>
             ✕
           </button>
-          {error && <ErrorMessage message={error} />}
         </div>
 
         <div className="modal_body">
