@@ -143,7 +143,6 @@ export default function EditTaskTab({ task, onClose, refreshTasks }) {
               onChange={handleChange}
             >
               <option value="PENDING">Pending</option>
-              <option value="ONGOING">Ongoing</option>
               <option value="DONE">Done</option>
             </select>
           </div>
