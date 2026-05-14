@@ -170,7 +170,8 @@ export default function TasksPage({ isOpen, setIsOpen }) {
         if (!alarm.alarmStart || !alarm.active) return;
         if (triggeredAlarms.current.has(alarm.id)) return;
 
-        const alarmTime = new Date(alarm.alarmStart);
+        // Remove the "Z" so it's treated as local time, not UTC
+        const alarmTime = new Date(alarm.alarmStart.replace("Z", ""));
         const diffMs = alarmTime - now;
 
         if (diffMs >= 0 && diffMs <= 30000) {

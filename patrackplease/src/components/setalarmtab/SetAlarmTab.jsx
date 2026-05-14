@@ -14,7 +14,6 @@ export default function SetAlarmTab({ task, onClose, refreshAllAlarms }) {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const saveAlarm = async () => {
-    // 1. Basic Validation
     if (!alarmName.trim() || !alarmStart || !alarmFinish) {
       setError("Please fill in all fields.");
       return;
@@ -33,11 +32,18 @@ export default function SetAlarmTab({ task, onClose, refreshAllAlarms }) {
       setLoading(true);
       setError("");
 
-      // 2. Prepare Payload with ISO Dates
+      // Keep local time — don't convert to UTC
+      const toLocalISO = (datetimeLocalValue) => {
+        const date = new Date(datetimeLocalValue);
+        const offset = date.getTimezoneOffset();
+        const localDate = new Date(date.getTime() - offset * 60000);
+        return localDate.toISOString().slice(0, 19); // "2026-05-14T10:13:00"
+      };
+
       const alarmData = {
         alarmName: alarmName.trim(),
-        alarmStart: new Date(alarmStart).toISOString(), // Formatting fix
-        alarmFinish: new Date(alarmFinish).toISOString(), // Formatting fix
+        alarmStart: toLocalISO(alarmStart), // ✅ stays as local time
+        alarmFinish: toLocalISO(alarmFinish), // ✅ stays as local time
         taskId: task.id,
       };
 
@@ -55,7 +61,6 @@ export default function SetAlarmTab({ task, onClose, refreshAllAlarms }) {
         },
       );
 
-      // 3. Handle non-OK responses (like 400 or 500)
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         throw new Error(errorData.message || "Server refused the alarm data.");
