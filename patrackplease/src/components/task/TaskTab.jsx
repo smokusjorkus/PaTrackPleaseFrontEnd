@@ -171,7 +171,7 @@ export default function TaskTab({
                         data-tooltip={`${alarm.alarmName}\n${
                           alarm.alarmStart
                             ? new Date(
-                                alarm.alarmStart.replace("Z", ""),
+                                alarm.alarmFinish.replace("Z", ""),
                               ).toLocaleString()
                             : "No time set"
                         }`}
